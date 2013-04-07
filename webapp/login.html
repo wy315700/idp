@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<title>Welcome Login!</title>
+	<!-- 加载CSS -->
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link href="/styles/layout.css" rel="stylesheet" type="text/css" />
+	<link href="/styles/login.css" rel="stylesheet" type="text/css" />
+	<link href="/themes/blue/styles.css" rel="stylesheet" type="text/css" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+</head>
+
+<!-- JS帐号密码不为空验证 -->
+<script language="javascript">
+function checklogin() {
+    if(checkform() == false){
+        return;
+    }
+    else{
+        var data;
+        data = $('#loginform').serialize();
+        $.post("/login",data,display_welcom,'json');
+    }
+};
+function display_welcom(data, textStatus, jqXHR){
+    if(data.islogin == 'true'){
+            $("#welcomeword").text(data.username);
+            //$("#logincontainer").fadeOut("slow");
+            $("#logincontainer").hide(2000);
+            $("#welcomeword").animate({
+                fontSize:'60px'
+            }, 2000 );
+            acsForm.SAMLResponse.value = data.samlResponse;
+            acsForm.action = data.acsUrl;
+            acsForm.submit();
+    }
+    else{
+        alert("passwords error");
+        login.password.value = "";
+    }
+
+}
+		function checkform(){
+			if((login.username.value!="")&&(login.password.value!="")){
+				//用户名密码不为空 则正确
+				return true;
+			}
+			else {
+				//用户名密码任意一个为空时 提示错误
+				alert("用户名密码不能为空！");
+				return false;
+			}
+		}
+
+function getArgs() { 
+    var args = {};
+        var query = location.search.substring(1);
+         // Get query string
+    var pairs = query.split("&"); 
+                    // Break at ampersand
+     for(var i = 0; i < pairs.length; i++) {
+            var pos = pairs[i].indexOf('=');
+             // Look for "name=value"
+            if (pos == -1) continue;
+                    // If not found, skip
+                var argname = pairs[i].substring(0,pos);// Extract the name
+                var value = pairs[i].substring(pos+1);// Extract the value
+                value = decodeURIComponent(value);// Decode it, if needed
+                args[argname] = value;
+                        // Store as a property
+        }
+    return args;// Return the object 
+ }
+ $(document).ready(function(){
+    var args = getArgs();
+    login.SAMLrequest.value = args['SAMLrequest'];
+});
+</script>
+
+<body>	
+
+<div id="logincontainer">
+    <div id="loginbox">
+        <div id="loginheader">
+            <img src="/themes/blue/img/cp_logo_login.png" alt="Control Panel Login" />
+        </div>
+        <div id="innerlogin">
+           	<form method = "post" action = "login" id = "loginform" name="login" onsubmit = "return checkform();">
+           		<!-- 表单提交给logincheck.php -->
+                <p>Enter your username:</p>
+                <input type="text" class="logininput" name="username" >
+                <p>Enter your password:</p>
+                <input type="password" class="logininput" name="password">
+                <input type="hidden" class="logininput" name="SAMLrequest">
+                <input type="submit" class="loginbtn" value="Submit"><br>
+            </form>
+            <input type="submit" class="loginbtn" value="Submit" onclick = "checklogin();"><br>
+            <p><a href="" title="Forgoteen Password?">Forgotten Password?</a></p>
+        </div>
+    </div>
+        <img src="../img/login_fade.png" alt="Fade" >
+</div>
+<div id="welcome" style="display: none">
+    <p id = "welcomeword"></p>
+    <form name="acsForm" id="acsForm"  method="post" >
+        <textarea rows=10 cols=80 name="SAMLResponse"></textarea>
+    </form>
+
+</div>
+</body>
+</html>
