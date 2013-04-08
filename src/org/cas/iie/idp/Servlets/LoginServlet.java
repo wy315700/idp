@@ -24,6 +24,7 @@ import org.xml.sax.SAXException;
 import LOG.Logger;
 import cc.saml.SAMLdecode;
 import cc.saml.SAMLrequest;
+import cc.saml.SAMLresponse;
 
 import com.google.gson.Gson;
 
@@ -60,7 +61,7 @@ public class LoginServlet extends HttpServlet{
 		if(islogin == true){
 			setSession(username, request);
 		}
-		
+		makeAssertion(samlRequest, username);
 	}
 	private void printResult(HttpServletResponse response){
 		try {
@@ -71,14 +72,25 @@ public class LoginServlet extends HttpServlet{
 			e.printStackTrace();
 		}
 	}
-	private String makeAssertion(String samlreuest){
+	private String makeAssertion(String samlreuest,String username){
 		SAMLrequest requestHandle = new SAMLrequest(samlreuest);
-		requestHandle.readFromRequest();
+		if(requestHandle.readFromRequest() == false){
+			return null;
+		}
 		String issuer       = requestHandle.getIssuerURL();
 		String acsUrl       = requestHandle.getAcsURL();
 		String requestID    = requestHandle.getRequestID();
 		String providerName = requestHandle.getprovideName();
-		return null;
+		
+		UserRole user = new UserRole();
+		user.setUsername(username);
+		
+		SAMLresponse responseHandle = new SAMLresponse(user, issuer, acsUrl, requestID);
+		responseHandle.generateAuthnResponse();
+		
+		String samlresponse = responseHandle.getSamlResponse();
+		
+		return samlresponse;
 	}
 	private String generateJson(String[] keys,String[] values){
 		Gson gson = new Gson();
@@ -94,20 +106,6 @@ public class LoginServlet extends HttpServlet{
 		return gson.toJson(userObj);
 	}
 	private boolean setSession(String username,HttpServletRequest request){
-		/*
-		IGetUser getuser = new GetUserByLdap();
-		UserRole user = getuser.getUserByName(username, true);
-		if(user != null){
-			if(session == null){
-				session = request.getSession();
-			}
-			session.setAttribute("uid",new Integer(user.getUserID()));
-			return true;
-		}
-		else{
-			return false;
-		}
-		*/
 		if(session == null){
 			session = request.getSession();
 		}

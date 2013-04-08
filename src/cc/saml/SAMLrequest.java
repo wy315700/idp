@@ -1,5 +1,13 @@
 package cc.saml;
 
+import java.io.IOException;
+
+import org.opensaml.saml2.core.AuthnRequest;
+import org.opensaml.xml.io.UnmarshallingException;
+import org.xml.sax.SAXException;
+
+import LOG.Logger;
+
 public class SAMLrequest extends SAML {
 	String samlRequest;
 
@@ -22,12 +30,34 @@ public class SAMLrequest extends SAML {
 	public String generateAuthnRequest(){
 		return samlRequest;
 	}
-	public void readFromRequest(){
+	public boolean readFromRequest(){
+		if(samlRequest == null){
+			return false;
+		}
+		SAMLdecode decoder = new SAMLdecode(samlRequest);
+		String samlXmlRequest = decoder.doDecode();
+		if(samlXmlRequest == null){
+			return false;
+		}
+		try {
+			AuthnRequest request = (AuthnRequest) readFromString(samlXmlRequest);
+			
+			issuerURL   = request.getIssuer().getValue();
+			requestID   = request.getID();
+			acsURL      = request.getAssertionConsumerServiceURL();
+			provideName = request.getProviderName();
+			return true;
+			
+		} catch (IOException | UnmarshallingException | SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Logger.writelog(e);
+		}
 		
+		return false;
 	}
 	
-	
-	
+
 	
 	public String getSamlRequest() {
 		return samlRequest;

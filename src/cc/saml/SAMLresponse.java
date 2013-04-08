@@ -24,13 +24,15 @@ public class SAMLresponse extends SAML {
 		this.samlResponse = samlResponse;
 	}
 	
-	public String generateAuthnResponse(){
-		return samlResponse;
+	public void generateAuthnResponse(){
 		
 	}
 	
+	public String getSamlResponse() {
+		return samlResponse;
+	}
+
 	public UserRole readFromResponse(){
 		return user;
-		
 	}
 }
