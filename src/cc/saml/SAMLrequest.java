@@ -6,10 +6,11 @@ public class SAMLrequest extends SAML {
     String issuerURL;
     String requestID;
     String acsURL;
-	public SAMLrequest(String issuerURL, String requestID, String acsURL) {
+    String provideName;
+	public SAMLrequest(String issuerURL, String provideName, String acsURL) {
 		super();
 		this.issuerURL = issuerURL;
-		this.requestID = requestID;
+		this.provideName = provideName;
 		this.acsURL = acsURL;
 	}
 	public SAMLrequest(String request) {

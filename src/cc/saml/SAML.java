@@ -1,5 +1,6 @@
 package cc.saml;
 
+import LOG.Logger;
 import cc.xml.PrettyPrinter;
 
 import java.io.IOException;
@@ -140,6 +141,7 @@ public class SAML
         catch (Exception ex)
         {
             ex.printStackTrace ();
+            Logger.writelog(ex);
         }
     }
     
@@ -171,6 +173,7 @@ public class SAML
         catch (Exception ex)
         {
             ex.printStackTrace ();
+            Logger.writelog(ex);
         }
     }
     

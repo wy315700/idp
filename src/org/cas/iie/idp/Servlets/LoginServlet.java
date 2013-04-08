@@ -47,7 +47,10 @@ public class LoginServlet extends HttpServlet{
 		}else{
 			needToAuthn = true;
 		}
-
+		
+		if(needToAuthn){
+			authenticateUser(username,password, request);
+		}
 	}
 	
 	private String generateJson(String[] keys,String[] values){

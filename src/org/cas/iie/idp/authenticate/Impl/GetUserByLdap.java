@@ -14,9 +14,11 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import org.cas.iie.idp.authenticate.IGetUser;
-import org.cas.iie.idp.authenticate.LDAP.ILDAPDriver;
+import org.cas.iie.idp.authenticate.LDAP.LDAPhelper;
 import org.cas.iie.idp.authenticate.LDAP.Impl.LDAPDriverByJndi;
 import org.cas.iie.idp.user.UserRole;
+
+import LOG.Logger;
 
 public class GetUserByLdap implements IGetUser {
 
@@ -53,6 +55,7 @@ public class GetUserByLdap implements IGetUser {
         } catch (NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			Logger.writelog(e);
 			user = null;
 		}
         

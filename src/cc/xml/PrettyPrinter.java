@@ -11,6 +11,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
+import LOG.Logger;
+
 
 /**
 This class "pretty prints" an XML stream to something more human-readable.
@@ -53,6 +55,7 @@ public class PrettyPrinter
         catch (Exception ex)
         {
             ex.printStackTrace ();
+            Logger.writelog(ex);
             return "EXCEPTION: " + ex.getClass ().getName () + " saying \"" +
                 ex.getMessage () + "\"";
         }
@@ -75,6 +78,7 @@ public class PrettyPrinter
         catch (Exception ex)
         {
             ex.printStackTrace ();
+            Logger.writelog(ex);
             return "EXCEPTION: " + ex.getClass ().getName () + " saying \"" +
                 ex.getMessage () + "\"";
         }
@@ -97,6 +101,7 @@ public class PrettyPrinter
         catch (Exception ex)
         {
             ex.printStackTrace ();
+            Logger.writelog(ex);
             return "EXCEPTION: " + ex.getClass ().getName () + " saying \"" +
                 ex.getMessage () + "\"";
         }
@@ -121,6 +126,7 @@ public class PrettyPrinter
         catch (Exception ex)
         {
             ex.printStackTrace ();
+            Logger.writelog(ex);
             return "EXCEPTION: " + ex.getClass ().getName () + " saying \"" +
                 ex.getMessage () + "\"";
         }
