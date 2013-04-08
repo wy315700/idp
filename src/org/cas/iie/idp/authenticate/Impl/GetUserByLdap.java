@@ -15,7 +15,6 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import org.cas.iie.idp.authenticate.IGetUser;
 import org.cas.iie.idp.authenticate.LDAP.LDAPhelper;
-import org.cas.iie.idp.authenticate.LDAP.Impl.LDAPDriverByJndi;
 import org.cas.iie.idp.user.UserRole;
 
 import LOG.Logger;
@@ -24,7 +23,7 @@ public class GetUserByLdap implements IGetUser {
 
 	private DirContext ctx = null;
 	public GetUserByLdap() {
-		ctx = LDAPDriverByJndi.getDirContext();
+		ctx = LDAPhelper.getDirContext();
 	}
 	@Override
 	public UserRole getUserByName(String username, boolean flag) {

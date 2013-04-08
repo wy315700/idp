@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-public class HelloFilter implements Filter {
+public class DefaultFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {

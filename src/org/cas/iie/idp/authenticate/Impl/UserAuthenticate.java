@@ -10,7 +10,7 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
-import org.cas.iie.idp.authenticate.LDAP.Impl.LDAPDriverByJndi;
+import org.cas.iie.idp.authenticate.LDAP.LDAPhelper;
 
 import LOG.Logger;
 
@@ -26,9 +26,9 @@ public class UserAuthenticate {
 	@SuppressWarnings("unchecked")
 	private void LDAPconnect() throws NamingException{
 		env = new Hashtable();
-	    env.put(Context.INITIAL_CONTEXT_FACTORY, LDAPDriverByJndi.INITIAL_CONTEXT_FACTORY);
-	    env.put(Context.PROVIDER_URL, LDAPDriverByJndi.PROVIDER_URL);
-	    env.put(Context.SECURITY_AUTHENTICATION, LDAPDriverByJndi.SECURITY_AUTHENTICATION);
+	    env.put(Context.INITIAL_CONTEXT_FACTORY, LDAPhelper.INITIAL_CONTEXT_FACTORY);
+	    env.put(Context.PROVIDER_URL, LDAPhelper.PROVIDER_URL);
+	    env.put(Context.SECURITY_AUTHENTICATION, LDAPhelper.SECURITY_AUTHENTICATION);
 		ctx = new InitialDirContext(env);
 	}
 	private String getUserDN(String username) throws NamingException{

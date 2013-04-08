@@ -21,7 +21,8 @@ public class ssoServlet extends HttpServlet {
 			rq.forward(request, response);
 		}
 		else{
-			response.getWriter().println("hello world !!");
+			RequestDispatcher rq = request.getRequestDispatcher("/login");
+			rq.forward(request, response);
 		}
 	}
 

@@ -53,5 +53,10 @@ public class SAMLrequest extends SAML {
 	public void setAcsURL(String acsURL) {
 		this.acsURL = acsURL;
 	}
-	
+	public String getprovideName() {
+		return provideName;
+	}
+	public void setprovideName(String provideName) {
+		this.provideName = acsURL;
+	}
 }
