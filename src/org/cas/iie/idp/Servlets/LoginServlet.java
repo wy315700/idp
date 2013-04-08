@@ -61,7 +61,8 @@ public class LoginServlet extends HttpServlet{
 		if(islogin == true){
 			setSession(username, request);
 		}
-		makeAssertion(samlRequest, username);
+		String samlresponse = makeAssertion(samlRequest, username);
+		response.getWriter().println(samlresponse);
 	}
 	private void printResult(HttpServletResponse response){
 		try {
@@ -85,7 +86,7 @@ public class LoginServlet extends HttpServlet{
 		UserRole user = new UserRole();
 		user.setUsername(username);
 		
-		SAMLresponse responseHandle = new SAMLresponse(user, issuer, acsUrl, requestID);
+		SAMLresponse responseHandle = new SAMLresponse(user, issuer, requestID,acsUrl);
 		responseHandle.generateAuthnResponse();
 		
 		String samlresponse = responseHandle.getSamlResponse();

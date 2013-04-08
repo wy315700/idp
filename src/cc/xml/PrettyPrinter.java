@@ -56,8 +56,7 @@ public class PrettyPrinter
         {
             ex.printStackTrace ();
             Logger.writelog(ex);
-            return "EXCEPTION: " + ex.getClass ().getName () + " saying \"" +
-                ex.getMessage () + "\"";
+            return null;
         }
     }
     
