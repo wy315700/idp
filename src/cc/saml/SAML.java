@@ -65,7 +65,7 @@ public class SAML
     private DocumentBuilder builder;
     private String issuerURL;
 
-    private static SecureRandomIdentifierGenerator generator;
+    protected static SecureRandomIdentifierGenerator generator;
     private static final String CM_PREFIX = "urn:oasis:names:tc:SAML:2.0:cm:";
     
     /**
