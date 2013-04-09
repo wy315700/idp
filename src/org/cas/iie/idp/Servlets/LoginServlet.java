@@ -63,7 +63,7 @@ public class LoginServlet extends HttpServlet{
 		}
 		
 		if(continueLogin == true){
-			setSession(username, request);
+			//setSession(username, request);
 			// 判断是正常登陆还是SSO登陆
 			if(samlRequest == null || samlRequest.equals("null")){
 				needToReturn = false;

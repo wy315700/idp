@@ -1,11 +1,13 @@
 package cc.saml;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
 import org.cas.iie.idp.user.UserRole;
 import org.joda.time.DateTime;
+import org.opensaml.common.SAMLException;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.AuthnContext;
 import org.opensaml.saml2.core.AuthnContextClassRef;
@@ -14,8 +16,11 @@ import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.Response;
+import org.opensaml.saml2.core.Statement;
 import org.opensaml.saml2.core.Subject;
 import org.opensaml.xml.io.MarshallingException;
+import org.opensaml.xml.io.UnmarshallingException;
+import org.xml.sax.SAXException;
 
 import LOG.Logger;
 
@@ -40,6 +45,54 @@ public class SAMLresponse extends SAML {
 		super();
 		this.samlResponse = samlResponse;
 	}
+	
+	
+	public UserRole readResponse(){
+		try {
+			if(samlResponse == null){
+				throw new SAMLException("samlresponse is empty!");
+			}
+			Response response = (Response) readFromString(samlResponse);
+			List<Assertion> assertions = response.getAssertions();
+			
+			if(assertions.size() < 1){
+				throw new SAMLException("no assertion found!");
+			}
+			if(assertions.size() > 1){
+				throw new SAMLException("multiple assertions found!");
+			}
+			Assertion assertion = assertions.get(0);
+			
+	        NameID nameID = assertion.getSubject ().getNameID ();
+	        
+	        UserRole returnuser = new UserRole();
+	        
+	        returnuser.setUsername(nameID.getValue());
+			return returnuser;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			Logger.writelog(e); 
+			e.printStackTrace();
+			return null;
+		} catch (UnmarshallingException e) {
+			// TODO Auto-generated catch block
+			Logger.writelog(e); 
+			e.printStackTrace();
+			return null;
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			Logger.writelog(e); 
+			e.printStackTrace();
+			return null;
+		} catch (SAMLException e) {
+			// TODO Auto-generated catch block
+			Logger.writelog(e); 
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
 	
 	public boolean generateAuthnResponse(){
 		try {
@@ -133,7 +186,4 @@ public class SAMLresponse extends SAML {
 		return samlResponse;
 	}
 
-	public UserRole readFromResponse(){
-		return user;
-	}
 }

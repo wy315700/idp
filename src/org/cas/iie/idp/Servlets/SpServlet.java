@@ -9,7 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.cas.iie.idp.user.UserRole;
+
 import cc.saml.SAMLrequest;
+import cc.saml.SAMLresponse;
 
 public class SpServlet extends HttpServlet {
 	
@@ -32,16 +35,27 @@ public class SpServlet extends HttpServlet {
 				response.sendRedirect(rediredtUrl);
 			}
 			else{
-				response.getWriter().println(samlresponse);
+				SAMLresponse responseHandle = new SAMLresponse(samlresponse);
+				UserRole user = responseHandle.readResponse();
+				if(user != null){
+					setSession(user.getUsername(),request);
+				}
+				response.getWriter().println(request.getSession(false).getAttribute("username"));
 			}
 		}
 		else{
-			
-			response.getWriter().println(session.getAttribute("username"));
+			response.getWriter().println(request.getSession(false).getAttribute("username"));
 		}
 		
 	}
-	
+	private boolean setSession(String username,HttpServletRequest request){
+		HttpSession session = request.getSession(false);
+		if(session == null){
+			session = request.getSession();
+		}
+		session.setAttribute("username", username);
+		return true;
+	}
 	private String makeRequest(){
 		SAMLrequest requesthandle = new SAMLrequest(ISSUER, PROVIDE_NAME, ACS_URL);
 		String samlrequest = requesthandle.generateAuthnRequest();
