@@ -12,16 +12,20 @@ function display_welcom(data, textStatus, jqXHR){
     if(data.islogin == 'true'){
         $("#welcomeword").text(data.username);
         //$("#logincontainer").fadeOut("slow");
-        $("#logincontainer").hide(2000);
+        $("#logincontainer").slideUp(2000);
 
         if(data.action == 'submitresponse'){
             acsForm.SAMLResponse.value = data.samlResponse;
             acsForm.action = data.acsUrl;
             acsForm.submit();
         }else if (data.action == 'welcome'){
-            $("#welcomeword").animate({
-                fontSize:'60px'
-            }, 2000 );
+        $("#welcomeword").text(data.username);
+        
+        $("#welcome").show();
+        $("#welcomeword").animate({
+            fontSize:'60px'
+        }, 2000 );
+
         } 
     }
     else{
@@ -63,4 +67,6 @@ function getArgs() {
  $(document).ready(function(){
     var args = getArgs();
     login.SAMLrequest.value = args['SAMLrequest'];
+
+
 });
