@@ -30,40 +30,71 @@ import com.google.gson.Gson;
 
 public class LoginServlet extends HttpServlet{
 	HttpSession session;
-	private String IssueInstant = "test";
-	private String ProviderName = "test";
-	private String AssertionConsumerServiceURL = "test";
-	private String ID = "test";
+
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
-		boolean islogin = false;
 		boolean needToAuthn = false;
+		boolean continueLogin = false;
+		boolean needToReturn = false;
+		String[] samlResponseAttributes = null;
 		String username     = request.getParameter("username");
 		String password     = request.getParameter("password");
 		String samlRequest  = request.getParameter("SAMLrequest");
 		
-		if(username == null ||password == null|| samlRequest == null){
-			needToAuthn = false;
+		if(username == null ||password == null){
+			continueLogin = false;
 		}else{
-			needToAuthn = true;
+			continueLogin = true;
 		}
 		// 如果session 已经存在 就不需要再次登录了
 		if(session != null && session.getAttribute("username") != null){
-			islogin = true;
+			continueLogin = true;
 			needToAuthn = false;
 		}
+		else{
+			needToAuthn = true;
+		}
 		if(needToAuthn == true){
-			islogin = authenticateUser(username,password, request);
+			continueLogin = authenticateUser(username,password, request);
 			//islogin = true; // for test only
 		}
-		if(islogin == true){
+		
+		if(continueLogin == true){
 			setSession(username, request);
-		}
-		String samlresponse = makeAssertion(samlRequest, username);
-		response.getWriter().println(samlresponse);
+			// 判断是正常登陆还是SSO登陆
+			if(samlRequest == null || samlRequest.equals("null")){
+				needToReturn = false;
+			}else{
+				needToReturn = true;
+			}
+			samlResponseAttributes = makeAssertion(samlRequest, username);
+			if(samlResponseAttributes == null){
+				needToReturn = false;
+			}
+			if(needToReturn == true){
+				String samlresponse = samlResponseAttributes[0];
+				String acsUrl = samlResponseAttributes[1];
+				String[] keys   = {"islogin","action","acsUrl","username","samlResponse"};
+				String[] values = {"true","submitresponse",acsUrl,username,samlresponse};
+				String returnJsonMessage = generateJson(keys, values);
+				response.getWriter().println(returnJsonMessage);
+			}else{
+				String[] keys   = {"islogin","action","username"};
+				String[] values = {"true","welcome",username};
+				String returnJsonMessage = generateJson(keys, values);
+				response.getWriter().println(returnJsonMessage);
+			}
+		}else{
+			returnErrorMessage(response);
+		}	
 	}
+	
+	private void returnErrorMessage(HttpServletResponse response) throws IOException{
+		response.getWriter().println("{\"islogin\":\"false\"}");
+	}
+	
 	private void printResult(HttpServletResponse response){
 		try {
 			response.getWriter().println("hello world");
@@ -73,7 +104,8 @@ public class LoginServlet extends HttpServlet{
 			e.printStackTrace();
 		}
 	}
-	private String makeAssertion(String samlreuest,String username){
+	//0 = samlresponse 1 = AssertionConsumerServiceURL
+	private String[] makeAssertion(String samlreuest,String username){
 		SAMLrequest requestHandle = new SAMLrequest(samlreuest);
 		if(requestHandle.readFromRequest() == false){
 			return null;
@@ -91,7 +123,9 @@ public class LoginServlet extends HttpServlet{
 		
 		String samlresponse = responseHandle.getSamlResponse();
 		
-		return samlresponse;
+		String[] samlResponseAttributes = new String[]{samlresponse,acsUrl};
+		
+		return samlResponseAttributes;
 	}
 	private String generateJson(String[] keys,String[] values){
 		Gson gson = new Gson();

@@ -1,7 +1,13 @@
 package org.cas.iie.idp.user;
 
+import java.util.List;
+
 public class UserRole {
+
 	private String username;
+	
+	private List<String> usergroup;
+	
 	private String password;
 	private int userID;
 	
@@ -12,7 +18,12 @@ public class UserRole {
 		this.password = password;
 		this.userID = userID;
 	}
-
+	public List<String> getUsergroup() {
+		return usergroup;
+	}
+	public void setUsergroup(List<String> usergroup) {
+		this.usergroup = usergroup;
+	}
 	public String getUsername() {
 		return username;
 	}
