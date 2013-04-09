@@ -29,7 +29,6 @@ import cc.saml.SAMLresponse;
 import com.google.gson.Gson;
 
 public class LoginServlet extends HttpServlet{
-	HttpSession session;
 
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
@@ -42,7 +41,9 @@ public class LoginServlet extends HttpServlet{
 		String username     = request.getParameter("username");
 		String password     = request.getParameter("password");
 		String samlRequest  = request.getParameter("SAMLrequest");
-		
+		if(request.getHeader("Referer") == null){
+			continueLogin = false;
+		}
 		if(username == null ||password == null){
 			continueLogin = false;
 		}else{
@@ -141,6 +142,7 @@ public class LoginServlet extends HttpServlet{
 		return gson.toJson(userObj);
 	}
 	private boolean setSession(String username,HttpServletRequest request){
+		HttpSession session = request.getSession(false);
 		if(session == null){
 			session = request.getSession();
 		}
