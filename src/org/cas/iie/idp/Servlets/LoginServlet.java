@@ -34,7 +34,6 @@ public class LoginServlet extends HttpServlet{
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
-		boolean needToAuthn = false;
 		boolean continueLogin = false;
 		boolean needToReturn = false;
 		String[] samlResponseAttributes = null;
@@ -44,35 +43,36 @@ public class LoginServlet extends HttpServlet{
 		if(request.getHeader("Referer") == null){
 			continueLogin = false;
 		}
-		if(username == null ||password == null){
-			continueLogin = false;
-		}else{
-			continueLogin = true;
-		}
+
 		// 如果session 已经存在 就不需要再次登录了
 		if(session != null && session.getAttribute("username") != null){
 			continueLogin = true;
-			needToAuthn = false;
-		}
-		else{
-			needToAuthn = true;
-		}
-		if(needToAuthn == true){
-			continueLogin = authenticateUser(username,password, request);
-			//islogin = true; // for test only
+		}else{
+			if(username == null ||password == null){
+				continueLogin = false;
+			}else{
+				continueLogin = authenticateUser(username,password, request);
+			}
 		}
 		
 		if(continueLogin == true){
 			//setSession(username, request);
 			// 判断是正常登陆还是SSO登陆
-			if(samlRequest == null || samlRequest.equals("null")){
+			if(samlRequest == null || samlRequest.equals("null") || samlRequest.equals("undefined")){
 				needToReturn = false;
 			}else{
 				needToReturn = true;
 			}
-			samlResponseAttributes = makeAssertion(samlRequest, username);
-			if(samlResponseAttributes == null){
+			try {
+				samlResponseAttributes = makeAssertion(samlRequest, username);
+				if(samlResponseAttributes == null){
+					throw new SAMLException("samlrequest is invalid!");
+				}
+			} catch (SAMLException e) {
+					// TODO Auto-generated catch block
 				needToReturn = false;
+				Logger.writelog(e);
+				e.printStackTrace();
 			}
 			if(needToReturn == true){
 				String samlresponse = samlResponseAttributes[0];
@@ -86,7 +86,7 @@ public class LoginServlet extends HttpServlet{
 				String[] values = {"true","welcome",username};
 				String returnJsonMessage = generateJson(keys, values);
 				response.getWriter().println(returnJsonMessage);
-			}
+			}	
 		}else{
 			returnErrorMessage(response);
 		}	

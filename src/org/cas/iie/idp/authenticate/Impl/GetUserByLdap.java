@@ -21,9 +21,9 @@ import LOG.Logger;
 
 public class GetUserByLdap implements IGetUser {
 
-	private DirContext ctx = null;
+	private LDAPhelper ldaphelper = null;
 	public GetUserByLdap() {
-		ctx = LDAPhelper.getDirContext();
+		ldaphelper = new LDAPhelper();
 	}
 	@Override
 	public UserRole getUserByName(String username, boolean flag) {
@@ -33,35 +33,65 @@ public class GetUserByLdap implements IGetUser {
 	    String base = "ou=member";
         String filter = "(&(objectClass=inetOrgPerson)(cn={0}))";
         String[] returnAttr = new String[] {"cn","uid"};
-        SearchControls ctls = new SearchControls();
-        ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-        ctls.setReturningAttributes(returnAttr);
-        ctls.setReturningObjFlag(true);
+        
         try {
-			NamingEnumeration enm = ctx.search(base, filter, new String[] { username }, ctls);
+			NamingEnumeration enm = ldaphelper.search(base, filter, new String[] { username }, returnAttr);
+			if(enm == null){
+				throw new NamingException("search failed");
+			}
 			if(enm.hasMore()){
 				SearchResult entry = (SearchResult)enm.next();
-				Attributes attrs = entry.getAttributes();
 				
+				String userDN = entry.getNameInNamespace();
+				
+				user.setUserDN(userDN);
+				
+				Attributes attrs = entry.getAttributes();
+		
 				if(attrs == null ||enm.hasMore()){
-					throw new NamingException("Authentication failed");
+					throw new NamingException("search failed");
 				}
 				Attribute uidAttr = attrs.get("uid");
 				user.setUserID(new Integer(uidAttr.get().toString()));
 				System.out.println("uid="+uidAttr.get());
 			}
-			ctx.close();
+			
+			user = getUserGroup(user);
+			
         } catch (NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			Logger.writelog(e);
 			user = null;
 		}
-        
-        
+        ldaphelper.close();
 		return user;
 	}
 
+	public UserRole getUserGroup(UserRole user){
+	    String base = "ou=group";
+        String filter = "(&(objectClass=groupOfUniqueNames)(uniqueMember={0}))";
+        String[] returnAttr = new String[] {"cn","uniqueMember"};
+        
+        try {
+			NamingEnumeration enm = ldaphelper.search(base, filter, new String[] { user.getUserDN() }, returnAttr);
+			if(enm == null){
+				throw new NamingException("search failed");
+			}
+			while(enm.hasMore()){
+				SearchResult entry = (SearchResult)enm.next();
+				Attributes attrs = entry.getAttributes();
+
+				Attribute cnAttr = attrs.get("cn");
+				user.addUsergroup(cnAttr.get().toString());
+			}
+        } catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Logger.writelog(e);
+		}
+        return user;
+	}
 	@Override
 	public UserRole getUserByID(int userID, boolean flag) {
 		// TODO Auto-generated method stub

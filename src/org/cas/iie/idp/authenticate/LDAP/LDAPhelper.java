@@ -18,13 +18,18 @@ import org.cas.iie.idp.authenticate.LDAP.ILDAPDriver;
 import LOG.Logger;
 
 public class LDAPhelper implements ILDAPDriver{
-	private static DirContext ctx = null;
+	private DirContext ctx = null;
 	public static String INITIAL_CONTEXT_FACTORY =  "com.sun.jndi.ldap.LdapCtxFactory";
 	public static String PROVIDER_URL =  "ldap://localhost:10389/dc=iie,dc=cas,dc=org";
 	public static String SECURITY_AUTHENTICATION =  "simple";
 	private static String username = "uid=admin,dc=iie,dc=cas,dc=org";
 	private static String password = "123456";
-	public static DirContext getDirContext(){
+	private static String configfile = "apacheds.properties";
+	
+	public void LDAPhelper(){
+		getDirContext();
+	}
+	private void getDirContext(){
 		if(ctx == null){
 			Hashtable env = new Hashtable();
 			env.put(Context.INITIAL_CONTEXT_FACTORY, INITIAL_CONTEXT_FACTORY);
@@ -42,9 +47,8 @@ public class LDAPhelper implements ILDAPDriver{
 				Logger.writelog(e);
 			}
 		}
-		return ctx;
 	}
-	public static void closeCtx()
+	public void close()
 	{
 		if(ctx != null){
 			try {
@@ -57,12 +61,28 @@ public class LDAPhelper implements ILDAPDriver{
 			ctx = null;
 		}
 	}
+	public NamingEnumeration search(String dn,String filter,String[] filtervalues,String[] returnAttributions){
+		getDirContext();
+		SearchControls sc = new SearchControls();
+		sc.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		sc.setReturningAttributes(returnAttributions);
+		sc.setReturningObjFlag(true);
+		try {
+			NamingEnumeration result = ctx.search(dn,filter,filtervalues, sc);
+			return result;
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			Logger.writelog(e);
+			e.printStackTrace();
+			return null;
+		}
+	}
 	@Override
 	public NamingEnumeration getEntriesSubTree(String dn,String filter) throws NamingException {
 		// TODO Auto-generated method stub
 		SearchControls sc = new SearchControls();
 		sc.setSearchScope(SearchControls.SUBTREE_SCOPE);
-		NamingEnumeration result = getDirContext().search(dn,filter, sc);
+		NamingEnumeration result = ctx.search(dn,filter, sc);
 		return result;
 	}
 	@Override
@@ -70,7 +90,7 @@ public class LDAPhelper implements ILDAPDriver{
 		// TODO Auto-generated method stub
 		SearchControls sc = new SearchControls();
 		sc.setSearchScope(SearchControls.ONELEVEL_SCOPE);
-		NamingEnumeration result = getDirContext().search(dn,filter, sc);
+		NamingEnumeration result = ctx.search(dn,filter, sc);
 		return result;
 	}
 	@Override
