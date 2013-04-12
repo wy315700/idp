@@ -40,7 +40,7 @@ public class SpServlet extends HttpServlet {
 				if(user != null){
 					setSession(user.getUsername(),request);
 				}
-				response.getWriter().println(request.getSession(false).getAttribute("username"));
+				response.getWriter().println(user.toString());
 			}
 		}
 		else{

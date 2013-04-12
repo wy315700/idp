@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
@@ -461,7 +462,7 @@ public class SAML
     
     @param statement Existing attribute statement
     @param name Attribute name
-    @param value Attribute value
+    @param values Attribute value
     */
     public void addAttribute 
         (AttributeStatement statement, String name, String value)
@@ -482,7 +483,35 @@ public class SAML
 
         statement.getAttributes ().add (attribute);
     }
+    /**
+    Adds multiple SAML attribute to an attribute statement.
+    
+    @param statement Existing attribute statement
+    @param name Attribute name
+    @param value Attribute value
+    */
+    public void addAttribute 
+        (AttributeStatement statement, String name, List<String> values)
+    {
+        // Build attribute values as XMLObjects;
+        //  there is an AttributeValue interface, but it's apparently dead code
+        final XMLObjectBuilder builder = 
+            Configuration.getBuilderFactory ().getBuilder (XSAny.TYPE_NAME);
 
+        Attribute attribute = create 
+                (Attribute.class, Attribute.DEFAULT_ELEMENT_NAME);
+        
+        attribute.setName (name);
+            
+        for(String value : values){
+            XSAny valueElement = (XSAny) builder.buildObject 
+                    (AttributeValue.DEFAULT_ELEMENT_NAME);
+        	valueElement.setTextContent (value);
+        	attribute.getAttributeValues ().add (valueElement);
+        }
+        
+        statement.getAttributes ().add (attribute);
+    }
     /**
     Returns a SAML attribute assertion.
     

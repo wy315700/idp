@@ -64,7 +64,9 @@ public class LoginServlet extends HttpServlet{
 				needToReturn = true;
 			}
 			try {
-				samlResponseAttributes = makeAssertion(samlRequest, username);
+				IGetUser getuserhandle = new GetUserByLdap();
+				UserRole user = getuserhandle.getUserByName(username, false);
+				samlResponseAttributes = makeAssertion(samlRequest, user);
 				if(samlResponseAttributes == null){
 					throw new SAMLException("samlrequest is invalid!");
 				}
@@ -106,7 +108,7 @@ public class LoginServlet extends HttpServlet{
 		}
 	}
 	//0 = samlresponse 1 = AssertionConsumerServiceURL
-	private String[] makeAssertion(String samlreuest,String username){
+	private String[] makeAssertion(String samlreuest,UserRole user){
 		SAMLrequest requestHandle = new SAMLrequest(samlreuest);
 		if(requestHandle.readFromRequest() == false){
 			return null;
@@ -115,10 +117,7 @@ public class LoginServlet extends HttpServlet{
 		String acsUrl       = requestHandle.getAcsURL();
 		String requestID    = requestHandle.getRequestID();
 		String providerName = requestHandle.getprovideName();
-		
-		UserRole user = new UserRole();
-		user.setUsername(username);
-		
+				
 		SAMLresponse responseHandle = new SAMLresponse(user, issuer, requestID,acsUrl);
 		responseHandle.generateAuthnResponse();
 		

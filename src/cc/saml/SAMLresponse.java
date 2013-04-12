@@ -1,7 +1,9 @@
 package cc.saml;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
@@ -9,6 +11,9 @@ import org.cas.iie.idp.user.UserRole;
 import org.joda.time.DateTime;
 import org.opensaml.common.SAMLException;
 import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.Attribute;
+import org.opensaml.saml2.core.AttributeStatement;
+import org.opensaml.saml2.core.AttributeValue;
 import org.opensaml.saml2.core.AuthnContext;
 import org.opensaml.saml2.core.AuthnContextClassRef;
 import org.opensaml.saml2.core.AuthnStatement;
@@ -18,8 +23,12 @@ import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.Statement;
 import org.opensaml.saml2.core.Subject;
+import org.opensaml.xml.Configuration;
+import org.opensaml.xml.XMLObject;
+import org.opensaml.xml.XMLObjectBuilder;
 import org.opensaml.xml.io.MarshallingException;
 import org.opensaml.xml.io.UnmarshallingException;
+import org.opensaml.xml.schema.XSAny;
 import org.xml.sax.SAXException;
 
 import LOG.Logger;
@@ -68,6 +77,10 @@ public class SAMLresponse extends SAML {
 	        UserRole returnuser = new UserRole();
 	        
 	        returnuser.setUsername(nameID.getValue());
+	        List<String> usergroup = readAttribution(assertion, UserRole.USERGROUP_KEY);
+	        returnuser.setUsergroup(usergroup);
+	        
+	        
 			return returnuser;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -97,6 +110,9 @@ public class SAMLresponse extends SAML {
 	public boolean generateAuthnResponse(){
 		try {
 			Assertion assertion = createStockAuthnAssertion();
+			
+			addAttribution(assertion, UserRole.USERGROUP_KEY, user.getUsergroup());
+			
 			samlResponse = showResponse(assertion);
 			if(samlResponse != null){
 				return true;
@@ -121,7 +137,34 @@ public class SAMLresponse extends SAML {
         response.setInResponseTo(requestID);
         return printToString(response);
     }
-	
+	private List<String> readAttribution(Assertion assertion,String key){
+		List<String> result = new ArrayList<String>();
+		for (Statement statement : assertion.getStatements ()){
+            if (statement instanceof AttributeStatement)
+                for (Attribute attribute : 
+                        ((AttributeStatement) statement).getAttributes ())
+                {
+                    if(attribute.getName().equals(key)){
+                        for (XMLObject value : attribute.getAttributeValues ())
+                            if (value instanceof XSAny)
+                            	result.add(((XSAny) value).getTextContent());
+                    }
+                }
+		}
+		return result;
+	}
+	private Assertion addAttribution(Assertion assertion,String key,List<String> values){
+		if(assertion == null || key == null ||values == null){
+			return null;
+		}
+		AttributeStatement statement = create (AttributeStatement.class, 
+	            AttributeStatement.DEFAULT_ELEMENT_NAME);
+				
+	    addAttribute (statement, key, values);
+	    assertion.getStatements ().add (statement);
+	    
+		return assertion;
+	}
 	/**
     Creates a file whose contents are a SAML authentication assertion.
     */

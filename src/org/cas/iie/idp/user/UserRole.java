@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserRole {
-
+	public static String USERGROUP_KEY = "usergroup";
 	private String username;
 	
 	private List<String> usergroup;
