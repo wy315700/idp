@@ -9,14 +9,6 @@
 	<link href="/styles/login.css" rel="stylesheet" type="text/css" />
 	<link href="/themes/blue/styles.css" rel="stylesheet" type="text/css" />
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="scripts/idp.js"></script>
-    <script language = "javascript">
-     $(document).ready(function(){
-        var args = getArgs();
-        login.SAMLrequest.value = args['SAMLrequest'];
-    });
-    </script>
-
 </head>
 
 <body>	
@@ -27,30 +19,18 @@
             <img src="/themes/blue/img/cp_logo_login.png" alt="Control Panel Login" />
         </div>
         <div id="innerlogin">
-           	<form method = "post" action = "login" id = "loginform" name="login" onsubmit = "return checkform();">
+           	<form method = "post" action = "login" id = "loginform" name="login">
            		<!-- 表单提交给logincheck.php -->
                 <p>Enter your username:</p>
                 <input type="text" class="logininput" name="username" >
                 <p>Enter your password:</p>
                 <input type="password" class="logininput" name="password">
-                <input type="hidden" class="logininput" name="SAMLrequest">
                 <input type="submit" class="loginbtn" value="Submit"><br>
             </form>
-            <input type="submit" class="loginbtn" value="Submit" onclick = "checklogin();"><br>
             <p><a href="" title="Forgoteen Password?">Forgotten Password?</a></p>
         </div>
     </div>
-        <img src="../img/login_fade.png" alt="Fade" >
+        <img src="/img/login_fade.png" alt="Fade" >
 </div>
-<div id="welcome" style="display: none">
-    <p id = "welcomeword"></p>
-</div>
-<div id="returndiv" style="display: none">
-    <form name="acsForm" id="acsForm"  method="post" >
-        <textarea rows=10 cols=80 name="SAMLResponse"></textarea>
-    </form>
-</div>
-
-
 </body>
 </html>

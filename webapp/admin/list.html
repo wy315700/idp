@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>用户管理系统</title>
+	<link href="styles/layout.css" rel="stylesheet" type="text/css" />
+	<link href="styles/wysiwyg.css" rel="stylesheet" type="text/css" />
+	<link href="themes/blue/styles.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<!-- 用frame分帧将页面分成三部分 -->
+<frameset rows="70px,*" border="0" frameborder="0" framespacing= "0" scrolling="no" noresize>
+	<frame src="top_list.html">
+	<frameset cols="226px,*" >
+		<frame src="left_list.html" border="0" frameborder="0" framespacing= "0" scrolling="no" noresize name="left">
+		<frame src="right_list.html" border="0" frameborder="0" framespacing="0"  noresize name="right">
+		<!-- frame设置name属性 左边按钮设置target="right" 达到点击左边按钮后右边显示相应页面  -->
+	</frameset>
+</frameset>
+
+	<!-- 防止IE6出现不兼容 -->
+    <!--[if IE 6]>
+    <script type='text/javascript' src='scripts/png_fix.js'></script>
+    <script type='text/javascript'>
+      DD_belatedPNG.fix('img, .notifycount, .selected');
+    </script>
+    <![endif]--> 
+    
+</html>
+

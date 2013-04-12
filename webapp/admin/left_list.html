@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link href="styles/layout.css" rel="stylesheet" type="text/css" />
+	<link href="themes/blue/styles.css" rel="stylesheet" type="text/css" />
+    <script type='text/javascript' src='scripts/jquery.min.js'></script>
+    <script type='text/javascript' src='scripts/jquery-ui.min.js'></script>
+    <script type="text/javascript">
+
+
+    </script>
+</head>
+
+<body id="homepage">
+  <!-- 左部菜单开始 -->
+  <div id="leftside">
+    <div class="user">
+        <img src="img/avatar.png" width="44" height="44" class="hoverimg" alt="Avatar" />
+        <p>Logged in as:</p>
+        <p class="username"></p>
+        <!-- 通过session获取用户名 并显示 -->
+        <p class="userbtn"><a href="admin/adminpass.php" title="修改密码" target="right">修改密码</a></p>
+        <p class="userbtn"><a href="off.php" target="_parent" title="注销">Log out</a></p>
+    </div>
+    
+    <ul id="nav">
+        <li>
+        <a class="collapsed heading" >用户管理</a>
+        <ul class="navigation">
+        <li><a href="dept/deptadd.php" title="添加群组" target="right">添加群组</a></li>
+        <li><a href="dept/deptlist.php" title="修改群组" target="right">修改群组</a></li>
+        <li><a href="dept/deptemp.php" title="部门群组" target="right">部门群组</a></li>
+     	</ul>
+        </li>
+        	<li>
+                <a class="collapsed heading" >签到与工资</a>
+                 <ul class="navigation">
+                   <li><a href="kaoqin/kqlist.php" title="考勤" target="right">考勤</a></li>
+                    <li><a href="kaoqin/kqview.php" title="考勤" target="right">考勤查询</a></li>
+                    <li><a href="sal/sallist.php" title="" target="right">上月工资</a></li>
+                    
+                </ul>
+            </li>
+            
+            <li><a class="expanded heading">学生管理</a>
+                <ul class="navigation">
+                    <li><a href="emp/empadd.php" title="增加雇员" class="likelogin" target="right">增加学生</a></li>
+                    <li><a href="emp/emplist.php" title="修改雇员" target="right">修改学生</a></li>
+                    <li><a href="emp/empsearch.php" title="雇员工作时间" target="right">学生查询</a></li>
+                </ul>
+            </li>            
+    </ul>
+       
+    </div>
+    <!-- 左部菜单结束 -->
+    
+    <!-- JS特效 -->
+    <script type="text/javascript" src="scripts/enhance.js"></script>
+    <script type='text/javascript' src='scripts/excanvas.js'></script>
+
+	<script type='text/javascript' src='scripts/jquery.wysiwyg.js'></script>
+    <script type='text/javascript' src='scripts/visualize.jQuery.js'></script>
+    <script type="text/javascript" src='scripts/functions.js'></script>
+    <script type="text/javascript">
+
+function getCookie(c_name){
+    if(document.cookie.length > 0){
+        c_start = document.cookie.indexOf(c_name+"=");
+        if(c_start != -1){
+            c_start = c_start + c_name.length + 1 ;
+            c_end   = document.cookie.indexOf(";",c_start);
+            if(c_end == -1){
+                c_end = document.cookie.length;
+            }
+            return unescape(document.cookie.substring(c_start,c_end));
+        }
+        return null;
+    }
+}
+    
+    $(document).ready(function(){
+        var adminname = getCookie("adminname");
+        if(adminname != null){
+            $(".username").text(adminname);
+        }
+    });
+    </script>
+</body>
+</html>

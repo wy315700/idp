@@ -46,4 +46,17 @@
 		<servlet-name>SpServlet</servlet-name>
 		<url-pattern>/sp</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+    <servlet-name>adminLoginServlet</servlet-name>
+    <servlet-class>org.cas.iie.idp.Servlets.admin.adminLoginServlet</servlet-class>
+    <load-on-startup>4</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>adminLoginServlet</servlet-name>
+        <url-pattern>/admin/login</url-pattern>
+    </servlet-mapping>
+	
+	
 </web-app>

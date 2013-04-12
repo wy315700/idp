@@ -64,9 +64,3 @@ function getArgs() {
         }
     return args;// Return the object 
  }
- $(document).ready(function(){
-    var args = getArgs();
-    login.SAMLrequest.value = args['SAMLrequest'];
-
-
-});
