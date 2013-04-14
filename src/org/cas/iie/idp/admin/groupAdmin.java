@@ -7,6 +7,8 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.SearchResult;
 
 import org.cas.iie.idp.authenticate.LDAP.LDAPhelper;
@@ -36,9 +38,12 @@ public class groupAdmin {
 				Attribute cnAttr = attrs.get("cn");
 				Attribute userAttr = attrs.get("uniqueMember");
 				group.setGroupname(cnAttr.get().toString());
+				group.setGroupDN(entry.getName());
 				if(userAttr.size() > 0){
 					for(int i = 0 ; i < userAttr.size() ; i++){
 						String username = userAttr.get(i).toString();
+						if(username.equals("cn=null"))
+							continue;
 						group.addUser(username);
 					}
 				}
@@ -68,9 +73,12 @@ public class groupAdmin {
 				Attribute cnAttr = attrs.get("cn");
 				Attribute userAttr = attrs.get("uniqueMember");
 				group.setGroupname(cnAttr.get().toString());
+				group.setGroupDN(entry.getName());
 				if(userAttr.size() > 0){
 					for(int i = 0 ; i < userAttr.size() ; i++){
 						String username = userAttr.get(i).toString();
+						if(username.equals("cn=null"))
+							continue;
 						group.addUser(username);
 					}
 				}
@@ -84,5 +92,20 @@ public class groupAdmin {
 		}
         ldaphelper.close();
         return groups;
+	}
+	public boolean deleteGroup(String groupname){
+		GroupRole group = getGroupByName(groupname);
+		LDAPhelper ldaphelper = new LDAPhelper();
+		return ldaphelper.delete(group.getGroupDN()+",ou=group");
+	}
+	public boolean addGroup(GroupRole group){
+		Attributes attrs = new BasicAttributes(true);
+		Attribute objectclass = new BasicAttribute("objectClass");
+		objectclass.add("groupOfUniqueNames");
+		objectclass.add("top");
+		attrs.put(objectclass);
+		attrs.put("cn", group.getGroupname());
+		attrs.put("uniqueMember","cn=null");
+		return ldaphelper.create("cn="+group.getGroupname()+",ou=group", attrs);
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 public class GroupRole {
 	String groupname;
+	String groupDN;
 	List<String> users;
 	public GroupRole(){
 		users = new ArrayList<String>();
@@ -23,6 +24,13 @@ public class GroupRole {
 	}
 	public void setUsers(List<String> users) {
 		this.users = users;
+	}
+	
+	public String getGroupDN() {
+		return groupDN;
+	}
+	public void setGroupDN(String groupDN) {
+		this.groupDN = groupDN;
 	}
 	@Override
 	public String toString() {

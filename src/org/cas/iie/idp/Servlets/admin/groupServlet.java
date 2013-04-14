@@ -23,7 +23,17 @@ public class groupServlet extends HttpServlet{
 				List<GroupRole> groups = groupadmin.getAllGroups(0, 0);
 				Gson json = new Gson();
 				String returnGroup = json.toJson(groups);
+				response.setCharacterEncoding("utf-8");
 				response.getWriter().println(returnGroup);
+			}else if(action.equals("addgroup")){
+				String groupname = request.getParameter("groupname");
+				if(groupname != null){
+					GroupRole group = new GroupRole();
+					group.setGroupname(groupname);
+					groupAdmin groupadmin = new groupAdmin();
+					boolean result = groupadmin.addGroup(group);
+					response.getWriter().print(result);
+				}
 			}
 		}
 		

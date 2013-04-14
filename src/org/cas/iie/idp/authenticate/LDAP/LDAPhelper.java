@@ -61,6 +61,30 @@ public class LDAPhelper implements ILDAPDriver{
 			ctx = null;
 		}
 	}
+	public boolean create(String DN,Attributes attrs){
+		getDirContext();
+		try {
+			ctx.createSubcontext(DN, attrs);
+			return true;
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			Logger.writelog(e);
+			e.printStackTrace();
+		}
+		return false;
+	}
+	public boolean delete(String dn){
+		getDirContext();
+		try {
+			ctx.destroySubcontext(dn);
+			return true;
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			Logger.writelog(e);
+			e.printStackTrace();
+		}
+		return false;
+	}
 	public NamingEnumeration search(String dn,String filter,String[] filtervalues,String[] returnAttributions){
 		getDirContext();
 		SearchControls sc = new SearchControls();

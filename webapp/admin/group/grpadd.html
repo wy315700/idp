@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link href="../styles/layout.css" rel="stylesheet" type="text/css" />
+	<link href="../styles/wysiwyg.css" rel="stylesheet" type="text/css" />
+	<link href="../themes/blue/styles.css" rel="stylesheet" type="text/css" />
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+</head>
+
+<!-- JS部门名不为空验证 -->
+<script language="javascript">
+		function checkadd(){
+			if(groupadd.groupname.value==""){
+                alert("群组名不能为空！");
+				return false;
+			}
+			return true;
+		}
+		function addgroup(){
+			if(checkadd() == true){
+				var data;
+        		data = $('#groupadd').serialize();
+        		$.post("/admin/group",data,function(data){
+        			if(data == "true"){
+        				alert("add succesful");
+        				document.location.reload();
+        			}else{
+        				alert("add false");
+        			}
+        		}
+        		);
+			}
+		}
+</script>
+
+<body>
+  	<!-- 右侧主页面上部导航条开始 -->
+    <div id="breadcrumb">
+    	<ul>	
+        	<li><img src="../img/icons/icon_breadcrumb.png" alt="Location" /></li>
+        	<li><strong>Location:</strong></li>
+            <li><a href="../right_list.php" title="返回首页">欢迎</a></li>
+            <li>/</li>
+	        <li class="current">添加部门</li>
+        </ul>
+    </div>
+    <!-- 右侧主页面上部导航条结束 -->
+
+<form action="#" method="post" name="groupadd" id="groupadd">
+	<table>
+		<tr>
+			<td>群组名</td>
+			<td><input type="text" name="groupname"></td>
+			<td><input type="hidden" name="action" value="addgroup"></td>
+		</tr>
+	</table>
+</form>
+<input type="submit" value="添加" name="submit" onclick="addgroup();">
+</body>
+</html>
