@@ -15,6 +15,8 @@ public class getGrouptest {
 		groupadmin.deleteGroup("grp2");
 		GroupRole group = new GroupRole();
 		group.setGroupname("grp2");
+		group.addUser("aaa");
+		group.addUser("bbb");
 		groupadmin.addGroup(group);
 	}
 

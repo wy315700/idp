@@ -6,39 +6,48 @@
 	<link href="../styles/layout.css" rel="stylesheet" type="text/css" />
 	<link href="../themes/blue/styles.css" rel="stylesheet" type="text/css" />
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	
-</head>
 
+</head>
+<script language="javascript">
+		function firm(){
+			if(confirm("是否删除此学生？")){
+				return true;
+			}
+                        else
+                        {
+                        return false;
+                        }
+			
+		}
+</script>
 <body>
- 	<!-- 右侧主页面上部导航条开始 -->
+	<!-- 右侧主页面上部导航条开始 -->
     <div id="breadcrumb">
     	<ul>	
         	<li><img src="../img/icons/icon_breadcrumb.png" alt="Location" /></li>
         	<li><strong>Location:</strong></li>
             <li><a href="../right_list.php" title="返回首页">欢迎</a></li>
             <li>/</li>
-	        <li class="current">修改/删除部门</li>
-            <li class="current"><font color="red">***删除部门请慎重***</font></li>
+	        <li class="current">学生信息</li>
         </ul>
     </div>
     <!-- 右侧主页面上部导航条结束 -->
-    <div>
-    	<table id="grouplist" border='0'>
+    
+	<div>
+    	<table id="userlist" border='0'>
     	<thead>
 		<tr>
-			<th>群组名称</th><th>用户数</th><th>修改</th><th>删除</th>
+			<th>用户名</th><th>真实名称</th><th>修改</th><th>删除</th>
 		</tr>
 		</thead>
 		<tbody>
 
 		</tbody>
-	</table>
+		</table>
     </div>
-	    
-
-	    <script language="javascript">
+<script language="javascript">
 		function firm(){
-			if(confirm("是否删除此部门？")){
+			if(confirm("是否删除此用户？")){
 				
 				return true;
 			}
@@ -46,12 +55,12 @@
                 return false;
             }
 		}
-		function delgroup(groupname){
+		function deluser(username){
 			if(firm() == false){
 				return;
 			}
 
-			var url = "/admin/group?action=delgroup&groupname="+groupname;
+			var url = "/admin/user?action=deluser&username="+username;
 			$.get(url,function(data){
 					if(data == "true"){
 						alert("delete successful!");
@@ -62,25 +71,25 @@
 				}
 			);
 		}
-		$(document).ready(function() {
-			var url = "/admin/group?action=getallgroups";
+
+    		$(document).ready(function() {
+			var url = "/admin/user?action=getallusers";
 			$.getJSON(url,function(data){
 				if(data.length > 0){
-					var tbody = $("#grouplist > tbody");
+					var tbody = $("#userlist > tbody");
 					for(var i = 0; i < data.length ; i++){
 						var tr = $("<tr></tr>");
-						var groupnametd = $("<td algin='center'></td>");
-						var usernumtd   = $("<td algin='center'></td>");
+						var usernametd = $("<td algin='center'></td>");
+						var realnametd   = $("<td algin='center'></td>");
 						var deltd       = $("<td algin='center'></td>")
 						var del         = $("<a>删除</a>");
-						var groupname   = data[i].groupname;
 
 						del.attr("href","#");
-						groupnametd.append(data[i].groupname);
-						usernumtd.append(data[i].users.length);
+						usernametd.append(data[i].username);
+						realnametd.append(data[i].realname);
 						deltd.append(del);
-						tr.append(groupnametd);
-						tr.append(usernumtd);
+						tr.append(usernametd);
+						tr.append(realnametd);
 						tr.append(deltd);
 
 						tbody.append(tr);
@@ -89,7 +98,7 @@
 					
 					del.each(function(i){
 						$(this).click(function(){
-							delgroup(data[i].groupname);
+							deluser(data[i].username);
 						}
 						);
 					});
@@ -99,8 +108,6 @@
 			}
 			);
 		});
-
 </script>
 </body>
 </html>
-

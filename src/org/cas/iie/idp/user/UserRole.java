@@ -6,7 +6,7 @@ import java.util.List;
 public class UserRole {
 	public static String USERGROUP_KEY = "usergroup";
 	private String username;
-	
+	private String realname;
 	private List<String> usergroup;
 	
 	private String password;
@@ -51,6 +51,12 @@ public class UserRole {
 		this.userID = userID;
 	}
 
+	public String getRealname() {
+		return realname;
+	}
+	public void setRealname(String realname) {
+		this.realname = realname;
+	}
 	public String getUserDN() {
 		return userDN;
 	}

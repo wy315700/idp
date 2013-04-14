@@ -104,6 +104,9 @@ public class groupAdmin {
 		return ldaphelper.delete(group.getGroupDN());
 	}
 	public boolean addGroup(GroupRole group){
+		if(group.getGroupname() == null){
+			return false;
+		}
 		LDAPhelper ldaphelper = new LDAPhelper();
 		Attributes attrs = new BasicAttributes(true);
 		Attribute objectclass = new BasicAttribute("objectClass");
@@ -111,13 +114,16 @@ public class groupAdmin {
 		objectclass.add("top");
 		attrs.put(objectclass);
 		attrs.put("cn", group.getGroupname());
+		
+		Attribute uniqueMember = new BasicAttribute("uniqueMember");
 		if(group.getUsers().size() == 0){
-			attrs.put("uniqueMember","cn=null");
+			uniqueMember.add("cn=null");
 		}else{
 			for(int i = 0; i < group.getUsers().size() ; i++){
-				attrs.put("uniqueMember","cn="+group.getUsers().get(i));
+				uniqueMember.add("cn="+group.getUsers().get(i));
 			}
 		}
+		attrs.put(uniqueMember);
 		return ldaphelper.create("cn="+group.getGroupname()+",ou=group", attrs);
 	}
 }
