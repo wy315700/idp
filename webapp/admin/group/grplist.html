@@ -46,6 +46,18 @@
                 return false;
             }
 		}
+		function delgroup(groupname){
+			var url = "/admin/group?action=delgroup&groupname="+groupname;
+			$.get(url,function(data){
+					if(data == "true"){
+						alert("delete successful!");
+					}else{
+						alert("delete false!");
+					}
+					document.location.reload();
+				}
+			);
+		}
 		$(document).ready(function() {
 			var url = "/admin/group?action=getallgroups";
 			$.getJSON(url,function(data){
@@ -53,16 +65,33 @@
 					var tbody = $("#grouplist > tbody");
 					for(var i = 0; i < data.length ; i++){
 						var tr = $("<tr></tr>");
-						var groupname = $("<td algin='center'></td>");
-						var usernum   = $("<td algin='center'></td>");
-						groupname.append(data[i].groupname);
-						usernum.append(data[i].users.length);
-						tr.append(groupname);
-						tr.append(usernum);
+						var groupnametd = $("<td algin='center'></td>");
+						var usernumtd   = $("<td algin='center'></td>");
+						var deltd       = $("<td algin='center'></td>")
+						var del         = $("<a>删除</a>");
+						var groupname   = data[i].groupname;
+
+						del.attr("href","#");
+						groupnametd.append(data[i].groupname);
+						usernumtd.append(data[i].users.length);
+						deltd.append(del);
+						tr.append(groupnametd);
+						tr.append(usernumtd);
+						tr.append(deltd);
+
 						tbody.append(tr);
 					}
+					var del = tbody.find("a");
+					
+					del.each(function(i){
+						$(this).click(function(){
+							delgroup(data[i].groupname);
+						}
+						);
+					});
 					
 				}
+
 			}
 			);
 		});

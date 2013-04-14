@@ -85,6 +85,7 @@ public class LDAPhelper implements ILDAPDriver{
 		}
 		return false;
 	}
+
 	public NamingEnumeration search(String dn,String filter,String[] filtervalues,String[] returnAttributions){
 		getDirContext();
 		SearchControls sc = new SearchControls();

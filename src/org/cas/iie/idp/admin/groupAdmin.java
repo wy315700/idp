@@ -38,7 +38,7 @@ public class groupAdmin {
 				Attribute cnAttr = attrs.get("cn");
 				Attribute userAttr = attrs.get("uniqueMember");
 				group.setGroupname(cnAttr.get().toString());
-				group.setGroupDN(entry.getName());
+				group.setGroupDN(entry.getName()+",ou=group");
 				if(userAttr.size() > 0){
 					for(int i = 0 ; i < userAttr.size() ; i++){
 						String username = userAttr.get(i).toString();
@@ -55,6 +55,11 @@ public class groupAdmin {
 		}
         ldaphelper.close();
         return group;
+	}
+	
+	public boolean modifyGoupe(GroupRole srcgroup, GroupRole disgroup){
+		deleteGroup(srcgroup.getGroupname());
+		return addGroup(disgroup);
 	}
 	public List<GroupRole> getAllGroups(int start , int limits){
 	    String base = "ou=group";
@@ -73,7 +78,7 @@ public class groupAdmin {
 				Attribute cnAttr = attrs.get("cn");
 				Attribute userAttr = attrs.get("uniqueMember");
 				group.setGroupname(cnAttr.get().toString());
-				group.setGroupDN(entry.getName());
+				group.setGroupDN(entry.getName()+",ou=group");
 				if(userAttr.size() > 0){
 					for(int i = 0 ; i < userAttr.size() ; i++){
 						String username = userAttr.get(i).toString();
@@ -96,16 +101,23 @@ public class groupAdmin {
 	public boolean deleteGroup(String groupname){
 		GroupRole group = getGroupByName(groupname);
 		LDAPhelper ldaphelper = new LDAPhelper();
-		return ldaphelper.delete(group.getGroupDN()+",ou=group");
+		return ldaphelper.delete(group.getGroupDN());
 	}
 	public boolean addGroup(GroupRole group){
+		LDAPhelper ldaphelper = new LDAPhelper();
 		Attributes attrs = new BasicAttributes(true);
 		Attribute objectclass = new BasicAttribute("objectClass");
 		objectclass.add("groupOfUniqueNames");
 		objectclass.add("top");
 		attrs.put(objectclass);
 		attrs.put("cn", group.getGroupname());
-		attrs.put("uniqueMember","cn=null");
+		if(group.getUsers().size() == 0){
+			attrs.put("uniqueMember","cn=null");
+		}else{
+			for(int i = 0; i < group.getUsers().size() ; i++){
+				attrs.put("uniqueMember","cn="+group.getUsers().get(i));
+			}
+		}
 		return ldaphelper.create("cn="+group.getGroupname()+",ou=group", attrs);
 	}
 }

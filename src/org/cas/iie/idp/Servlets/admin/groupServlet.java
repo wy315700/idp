@@ -34,6 +34,13 @@ public class groupServlet extends HttpServlet{
 					boolean result = groupadmin.addGroup(group);
 					response.getWriter().print(result);
 				}
+			}else if(action.equals("delgroup")){
+				String groupname = request.getParameter("groupname");
+				if(groupname != null){
+					groupAdmin groupadmin = new groupAdmin();
+					boolean result = groupadmin.deleteGroup(groupname);
+					response.getWriter().print(result);
+				}
 			}
 		}
 		
