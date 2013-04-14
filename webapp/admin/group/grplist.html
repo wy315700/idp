@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link href="../styles/layout.css" rel="stylesheet" type="text/css" />
+	<link href="../themes/blue/styles.css" rel="stylesheet" type="text/css" />
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	
+</head>
+
+<body>
+ 	<!-- 右侧主页面上部导航条开始 -->
+    <div id="breadcrumb">
+    	<ul>	
+        	<li><img src="../img/icons/icon_breadcrumb.png" alt="Location" /></li>
+        	<li><strong>Location:</strong></li>
+            <li><a href="../right_list.php" title="返回首页">欢迎</a></li>
+            <li>/</li>
+	        <li class="current">修改/删除部门</li>
+            <li class="current"><font color="red">***删除部门请慎重***</font></li>
+        </ul>
+    </div>
+    <!-- 右侧主页面上部导航条结束 -->
+    <div>
+    	<table id="grouplist" border='0'>
+    	<thead>
+		<tr>
+			<th>群组名称</th><th>用户数</th><th>修改</th><th>删除</th>
+		</tr>
+		</thead>
+		<tbody>
+
+		</tbody>
+	</table>
+    </div>
+	    
+
+	    <script language="javascript">
+		function firm(){
+			if(confirm("是否删除此部门？")){
+				
+				return true;
+			}
+			 else{
+                return false;
+            }
+		}
+		$(document).ready(function() {
+			var url = "/admin/group?action=getallgroups";
+			$.getJSON(url,function(data){
+				if(data.length > 0){
+					var tbody = $("#grouplist > tbody");
+					for(var i = 0; i < data.length ; i++){
+						var tr = $("<tr></tr>");
+						var groupname = $("<td algin='center'></td>");
+						var usernum   = $("<td algin='center'></td>");
+						groupname.append(data[i].groupname);
+						usernum.append(data[i].users.length);
+						tr.append(groupname);
+						tr.append(usernum);
+						tbody.append(tr);
+					}
+					
+				}
+			}
+			);
+		});
+
+</script>
+</body>
+</html>
+
