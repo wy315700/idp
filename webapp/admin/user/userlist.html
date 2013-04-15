@@ -61,6 +61,8 @@
 			}
 
 			var url = "/admin/user?action=deluser&username="+username;
+			url = encodeURI(url);
+
 			$.get(url,function(data){
 					if(data == "true"){
 						alert("delete successful!");

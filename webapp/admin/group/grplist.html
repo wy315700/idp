@@ -52,6 +52,7 @@
 			}
 
 			var url = "/admin/group?action=delgroup&groupname="+groupname;
+			url = encodeURI(url);
 			$.get(url,function(data){
 					if(data == "true"){
 						alert("delete successful!");
