@@ -58,14 +58,15 @@ public class LoginServlet extends HttpServlet{
 		if(continueLogin == true){
 			//setSession(username, request);
 			// 判断是正常登陆还是SSO登陆
+			IGetUser getuserhandle = new GetUserByLdap();
+			UserRole user = getuserhandle.getUserByName(username, false);
+
 			if(samlRequest == null || samlRequest.equals("null") || samlRequest.equals("undefined")){
 				needToReturn = false;
 			}else{
 				needToReturn = true;
 				
 				try {
-					IGetUser getuserhandle = new GetUserByLdap();
-					UserRole user = getuserhandle.getUserByName(username, false);
 					samlResponseAttributes = makeAssertion(samlRequest, user);
 					if(samlResponseAttributes == null){
 						throw new SAMLException("samlrequest is invalid!");

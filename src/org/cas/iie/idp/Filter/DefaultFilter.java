@@ -24,7 +24,7 @@ public class DefaultFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest)req;
 		HttpServletResponse response = (HttpServletResponse)res;
-		System.out.println("拦截 URI="+request.getRequestURI());
+		System.out.println("拦截 URI="+request.getRequestURL());
 		/*
 		HttpSession session = request.getSession(false);
 		String requestUrl = request.getRequestURL().toString().toLowerCase();

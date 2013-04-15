@@ -32,7 +32,7 @@ public class GetUserByLdap implements IGetUser {
 		user.setUsername(username);
 	    String base = "ou=member";
         String filter = "(&(objectClass=inetOrgPerson)(cn={0}))";
-        String[] returnAttr = new String[] {"cn","uid"};
+        String[] returnAttr = new String[] {"cn","uid","sn"};
         
         try {
 			NamingEnumeration enm = ldaphelper.search(base, filter, new String[] { username }, returnAttr);
@@ -51,9 +51,15 @@ public class GetUserByLdap implements IGetUser {
 				if(attrs == null ||enm.hasMore()){
 					throw new NamingException("search failed");
 				}
+				Attribute snAttr  = attrs.get("sn");
 				Attribute uidAttr = attrs.get("uid");
-				user.setUserID(new Integer(uidAttr.get().toString()));
-				System.out.println("uid="+uidAttr.get());
+				if(snAttr != null){
+					user.setRealname(snAttr.get().toString());
+				}
+				if(uidAttr != null){
+					user.setUserID(new Integer(uidAttr.get().toString()));
+				}
+				System.out.println("username="+user.getUsername());
 			}
 			
 			user = getUserGroup(user);
