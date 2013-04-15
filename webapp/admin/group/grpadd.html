@@ -34,6 +34,29 @@
         		);
 			}
 		}
+		$(document).ready(function(){
+			$("input").keypress(function (e) {
+				var keyCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+				if (keyCode == 13){
+					var i;
+					for (i = 0; i < this.form.elements.length; i++)
+					{
+						if (this == this.form.elements[i])
+							break;
+
+					}
+					if(i == 0){
+						addgroup();
+					}
+					i = (i + 1) % this.form.elements.length;
+					this.form.elements[i].focus();
+					return false;
+				}
+				else
+					return true;
+			});
+
+		});
 </script>
 
 <body>
@@ -49,15 +72,19 @@
     </div>
     <!-- 右侧主页面上部导航条结束 -->
 
-<form action="#" method="post" name="groupadd" id="groupadd">
+<form name="groupadd" id="groupadd" method="post" action="">
 	<table>
 		<tr>
 			<td>群组名</td>
 			<td><input type="text" name="groupname"></td>
 			<td><input type="hidden" name="action" value="addgroup"></td>
 		</tr>
+		<tr>
+			<td>
+		<input type="button" value="添加" name="button" onclick="addgroup();">
+</td>
+</tr>
 	</table>
 </form>
-<input type="submit" value="添加" name="submit" onclick="addgroup();">
 </body>
 </html>

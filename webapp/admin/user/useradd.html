@@ -43,7 +43,28 @@
         		);
 			}
 		}
+		$(document).ready(function(){
+			$("input").keypress(function (e) {
+				var keyCode = e.keyCode ? e.keyCode : e.which ? e.which : e.charCode;
+				if (keyCode == 13){
+					var i;
+					for (i = 0; i < this.form.elements.length; i++)
+						if (this == this.form.elements[i])
+							break;
 
+					if(i == 2){
+						adduser();
+					}
+
+						i = (i + 1) % this.form.elements.length;
+						this.form.elements[i].focus();
+						return false;
+				}
+				else
+					return true;
+			});
+
+		});
 </script>
 <body>
 	<!-- 右侧主页面上部导航条开始 -->
@@ -64,7 +85,6 @@
 		<tr>
 			<td>用户名</td>
 			<td><input type="text" name="username"></td>
-			<td><input type="hidden" name="action" value="adduser"></td>
 		</tr>
 		<tr>
 			<td>真实名称</td>
@@ -74,9 +94,15 @@
 			<td>密码</td>
 			<td><input type="text" name="password"></td>
 		</tr>
+		<tr>
+			<td>
+		<input type="button" value="添加" name="button" onclick="adduser();">
+		<td><input type="hidden" name="action" value="adduser"></td>
+
+			</td>
+		</tr>
 </table>
 </form>
-<input type="submit" value="添加" name="submit" onclick="adduser();">
 
 </body>
 </html>
