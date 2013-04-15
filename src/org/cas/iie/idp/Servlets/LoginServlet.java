@@ -62,19 +62,21 @@ public class LoginServlet extends HttpServlet{
 				needToReturn = false;
 			}else{
 				needToReturn = true;
-			}
-			try {
-				IGetUser getuserhandle = new GetUserByLdap();
-				UserRole user = getuserhandle.getUserByName(username, false);
-				samlResponseAttributes = makeAssertion(samlRequest, user);
-				if(samlResponseAttributes == null){
-					throw new SAMLException("samlrequest is invalid!");
+				
+				try {
+					IGetUser getuserhandle = new GetUserByLdap();
+					UserRole user = getuserhandle.getUserByName(username, false);
+					samlResponseAttributes = makeAssertion(samlRequest, user);
+					if(samlResponseAttributes == null){
+						throw new SAMLException("samlrequest is invalid!");
+					}
+				} catch (SAMLException e) {
+						// TODO Auto-generated catch block
+					needToReturn = false;
+					Logger.writelog(e);
+					e.printStackTrace();
 				}
-			} catch (SAMLException e) {
-					// TODO Auto-generated catch block
-				needToReturn = false;
-				Logger.writelog(e);
-				e.printStackTrace();
+
 			}
 			if(needToReturn == true){
 				String samlresponse = samlResponseAttributes[0];
