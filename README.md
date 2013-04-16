@@ -22,7 +22,7 @@
 
 ### 模型图
 
-![模型图](http://ww4.sinaimg.cn/large/bfadf3bejw1e3r7ydueuuj.jpg "设计模型图")
+![模型图](http://ww4.sinaimg.cn/large/a74ecc4cjw1e3r8nns2jvj.jpg "设计模型图")
 
 ## LDAP
 
