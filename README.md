@@ -10,7 +10,7 @@
 
 但是此时每个公司仍旧需要一个独立的用户管理系统。
 
-而此项目将不同公司间的SSO服务器进行 **统一管理** 。
+而此项目将不同公司间的IDP服务器进行 **统一管理** 。
 
 提供给每个公司一个 **虚拟** 的IDP服务器。
 
@@ -22,7 +22,7 @@
 
 ### 模型图
 
-![模型图](http://ww1.sinaimg.cn/large/a74ecc4cjw1e3qn9ocnqij.jpg "设计模型图")
+![模型图](http://ww4.sinaimg.cn/large/bfadf3bejw1e3r7ydueuuj.jpg "设计模型图")
 
 ## LDAP
 
