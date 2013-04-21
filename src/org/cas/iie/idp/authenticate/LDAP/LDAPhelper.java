@@ -85,7 +85,21 @@ public class LDAPhelper implements ILDAPDriver{
 		}
 		return false;
 	}
-
+	public boolean modify(String DN,Attributes attrs){
+		getDirContext();
+		try {
+			long start = System.currentTimeMillis();
+			ctx.modifyAttributes(DN, DirContext.REPLACE_ATTRIBUTE, attrs);
+			long end = System.currentTimeMillis();
+			System.out.println(end-start);
+			return true;
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			Logger.writelog(e);
+			e.printStackTrace();
+		}
+		return false;
+	}
 	public NamingEnumeration search(String dn,String filter,String[] filtervalues,String[] returnAttributions){
 		getDirContext();
 		SearchControls sc = new SearchControls();

@@ -1,5 +1,6 @@
 package test;
 
+import java.util.Date;
 import java.util.List;
 
 import org.cas.iie.idp.admin.userAdmin;
@@ -24,8 +25,12 @@ public class getUsertest {
 		//user.setUserDN("cn="+user.getUsername()+",ou=member");
 		//useradmin.addUser(user);
 		//List<UserRole> users = useradmin.getAllUsers(0,0);
+		long start = System.currentTimeMillis();
 		UserRole user = useradmin.getUserByName("wangyang");
-		System.out.println(user.toString());
+		user.addUsergroup("awq");
+		useradmin.modifyUseGroup(user);
+		long end = System.currentTimeMillis();
+		System.out.println(end-start);
 	}
 
 }

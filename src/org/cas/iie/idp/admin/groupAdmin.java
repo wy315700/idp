@@ -13,6 +13,7 @@ import javax.naming.directory.SearchResult;
 
 import org.cas.iie.idp.authenticate.LDAP.LDAPhelper;
 import org.cas.iie.idp.user.GroupRole;
+import org.cas.iie.idp.user.UserRole;
 
 import LOG.Logger;
 
@@ -61,6 +62,45 @@ public class groupAdmin {
 		deleteGroup(srcgroup.getGroupname());
 		return addGroup(disgroup);
 	}
+	public boolean modifyGroupMembers(UserRole users){
+		List<GroupRole> groups = getAllGroups(0, 0);
+		
+		for(GroupRole group : groups){
+			deleteUserFromGroup(group, users);
+			for(String groupname : users.getUsergroup()){
+				if(group.getGroupname().equals(groupname)){
+					addUsertoGroup(group, users);
+				}
+			}
+		}
+		return true;
+	}
+	public boolean deleteUserFromGroup(GroupRole group,UserRole user){
+		Attributes attrs = new BasicAttributes();
+		
+		Attribute uniquememberattr = new BasicAttribute("uniqueMember");
+		uniquememberattr.add("cn=null");
+		for(String userDn : group.getUsers()){
+			if( !userDn.equals(user.getUserDN()))
+				uniquememberattr.add(userDn);
+		}
+		attrs.put(uniquememberattr);
+		return ldaphelper.modify(group.getGroupDN(), attrs);
+	}
+	public boolean addUsertoGroup(GroupRole group,UserRole user){
+		Attributes attrs = new BasicAttributes();
+		
+		Attribute uniquememberattr = new BasicAttribute("uniqueMember");
+		uniquememberattr.add("cn=null");
+		for(String userDn : group.getUsers()){
+			uniquememberattr.add(userDn);
+		}
+		uniquememberattr.add(user.getUserDN());
+		attrs.put(uniquememberattr);
+
+		return ldaphelper.modify(group.getGroupDN(), attrs);
+	}
+
 	public List<GroupRole> getAllGroups(int start , int limits){
 	    String base = "ou=group";
         String filter = "(objectClass=groupOfUniqueNames)";

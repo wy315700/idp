@@ -116,9 +116,9 @@ public class userAdmin {
 			if(enm.hasMore()){
 				SearchResult entry = (SearchResult)enm.next();
 				
-				String userDN = entry.getName();
+				String userDN = entry.getNameInNamespace();
 				
-				user.setUserDN(userDN+",ou=member");
+				user.setUserDN(userDN);
 				
 				Attributes attrs = entry.getAttributes();
 		
@@ -131,6 +131,7 @@ public class userAdmin {
 				user.setRealname(snAttr.get().toString());
 				user.setUsername(cnAttr.get().toString());
 				
+				user = getUserGroup(user);
 			}
         } catch (NamingException e) {
 			// TODO Auto-generated catch block
@@ -138,7 +139,40 @@ public class userAdmin {
 			Logger.writelog(e);
 			user = null;
 		}
+        
 		return user;
+	}
+	
+	public UserRole getUserGroup(UserRole user){
+	    String base = "ou=group";
+        String filter = "(&(objectClass=groupOfUniqueNames)(uniqueMember={0}))";
+        String[] returnAttr = new String[] {"cn","uniqueMember"};
+        
+        try {
+			NamingEnumeration enm = ldaphelper.search(base, filter, new String[] { user.getUserDN() }, returnAttr);
+			if(enm == null){
+				throw new NamingException("search failed");
+			}
+			while(enm.hasMore()){
+				SearchResult entry = (SearchResult)enm.next();
+				Attributes attrs = entry.getAttributes();
+
+				Attribute cnAttr = attrs.get("cn");
+				user.addUsergroup(cnAttr.get().toString());
+			}
+        } catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Logger.writelog(e);
+		}
+        return user;
+	}
+	public boolean modifyUseGroup(UserRole user){
+		UserRole preuser = getUserByName(user.getUsername());
+		user.setUserDN(preuser.getUserDN());
+		groupAdmin groupadmin = new groupAdmin();
+		groupadmin.modifyGroupMembers(user);
+		return true;
 	}
 	public boolean deleteuser(String username){
 		UserRole user = getUserByName(username);

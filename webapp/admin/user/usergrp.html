@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link href="../styles/layout.css" rel="stylesheet" type="text/css" />
+	<link href="../themes/blue/styles.css" rel="stylesheet" type="text/css" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+</head>
+<script language="javascript">
+		function firm(){
+			if(confirm("是否删除此学生？")){
+				return true;
+			}
+                        else
+                        {
+                        return false;
+                        }
+			
+		}
+</script>
+<body>
+	<!-- 右侧主页面上部导航条开始 -->
+    <div id="breadcrumb">
+    	<ul>	
+        	<li><img src="../img/icons/icon_breadcrumb.png" alt="Location" /></li>
+        	<li><strong>Location:</strong></li>
+            <li><a href="../right_list.php" title="返回首页">欢迎</a></li>
+            <li>/</li>
+	        <li class="current">修改用户</li>
+        </ul>
+    </div>
+    <!-- 右侧主页面上部导航条结束 -->
+    
+	<div>
+    	<table id="userlist" border='0'>
+    	<thead>
+		<tr>
+			<td>用户名</td>
+		</tr>
+        <tr>
+            <td>用户1</td><td>用户1</td><td>修改</td><td>分配群组</td><td>删除</td>
+        </tr>
+        <tr>
+            <td>用户2</td><td>用户2</td><td>修改</td><td>分配群组</td><td>删除</td>
+        </tr>
+		</thead>
+		<tbody>
+
+		</tbody>
+		</table>
+    </div>
+<script language="javascript">
+		function firm(){
+			if(confirm("是否删除此用户？")){
+				
+				return true;
+			}
+			 else{
+                return false;
+            }
+		}
+		function deluser(username){
+			if(firm() == false){
+				return;
+			}
+
+			var url = "/admin/user?action=deluser&username="+username;
+			url = encodeURI(url);
+
+			$.get(url,function(data){
+					if(data == "true"){
+						alert("delete successful!");
+					}else{
+						alert("delete false!");
+					}
+					document.location.reload();
+				}
+			);
+		}
+
+    		$(document).ready(function() {
+			var url = "/admin/user?action=getallusers";
+			$.getJSON(url,function(data){
+				if(data.length > 0){
+					var tbody = $("#userlist > tbody");
+					for(var i = 0; i < data.length ; i++){
+						var tr = $("<tr></tr>");
+						var usernametd = $("<td algin='center'></td>");
+						var realnametd   = $("<td algin='center'></td>");
+						var deltd       = $("<td algin='center'></td>")
+						var del         = $("<a>删除</a>");
+
+						del.attr("href","#");
+						usernametd.append(data[i].username);
+						realnametd.append(data[i].realname);
+						deltd.append(del);
+						tr.append(usernametd);
+						tr.append(realnametd);
+						tr.append(deltd);
+
+						tbody.append(tr);
+					}
+					var del = tbody.find("a");
+					
+					del.each(function(i){
+						$(this).click(function(){
+							deluser(data[i].username);
+						}
+						);
+					});
+					
+				}
+
+			}
+			);
+		});
+</script>
+</body>
+</html>

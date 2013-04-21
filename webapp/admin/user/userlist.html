@@ -39,17 +39,36 @@
 		<tr>
 			<th>用户名</th><th>真实名称</th><th>修改</th><th>分配群组</th><th>删除</th>
 		</tr>
+		<!--
         <tr>
             <td>用户1</td><td>用户1</td><td>修改</td><td>分配群组</td><td>删除</td>
         </tr>
         <tr>
             <td>用户2</td><td>用户2</td><td>修改</td><td>分配群组</td><td>删除</td>
         </tr>
+    -->
 		</thead>
 		<tbody>
 
 		</tbody>
 		</table>
+
+    	<table id="usergrp" border='0' style='display:none'>
+		<tr>
+			<td>用户名</td>
+		</tr>
+        <tr>
+            <td>群组</td>
+        </tr>
+        <tr>
+        	<td>
+        	<input type="button" value="修改" name="button" onclick="modifyusergroup();">
+        	<input type="hidden" class="username" name="username">
+			<input type="hidden" name="action" value="modifyusergroup">
+        	</td>
+        </tr>
+		</table>
+		<p id="modifyalert" style='display:none'>正在修改，请稍后</p>
     </div>
 <script language="javascript">
 		function firm(){
@@ -61,6 +80,26 @@
                 return false;
             }
 		}
+
+		function modifyusergroup(){
+			var form = $("<form action=\"#\"></form>");
+			form.append($("#usergrp"));
+			var url = "admin/user";
+
+        	data = form.serialize();
+        	$("#modifyalert").show();
+        	$.post("/admin/user",data,function(data){
+        		if(data == "true"){
+        			alert("add succesful");
+        			document.location.reload();
+        		}else{
+        			alert("add false");
+        		}
+        	});
+
+
+		}
+
 		function deluser(username){
 			if(firm() == false){
 				return;
@@ -79,42 +118,111 @@
 				}
 			);
 		}
+		function getuserbyname (username) {
 
-    		$(document).ready(function() {
+			$(".username").val(username);
+
+			var url = "/admin/group?action=getallgroups";
+			$.getJSON(url,function(data){
+				if(data.length > 0){
+					var tr = $("#usergrp  tr:eq(1)");
+					var td = $("<td></td>");
+					for (var i = 0; i < data.length; i++) {
+						var selectgroup = $("<input type=\"checkbox\" />");
+						var groupnamelabel = $("<label></label>");
+						selectgroup.attr("name","groupname");
+						selectgroup.attr("id",data[i].groupname);
+						selectgroup.attr("value",data[i].groupname);
+						td.append(selectgroup);
+						groupnamelabel.append(data[i].groupname);
+						groupnamelabel.attr("for",data[i].groupname);
+						td.append(groupnamelabel);
+						td.append("<br/>");
+					};
+					tr.append(td);		
+					}
+
+			});
+
+
+
+			var url = "/admin/user?action=getuser&username="+encodeURI(username);
+			$.getJSON(url,function(data){
+				$("#userlist").hide();
+				$("#usergrp").show();
+				var usernametd = $("<td algin='center'></td>");
+				var usergrptd  = $("<td algin='center'></td>");
+
+				usernametd.append(data.username);
+
+				for (var i = 0; i < data.usergroup.length; i++) {
+					var usergroup = $("#usergrp  tr:eq(1)").find("input");
+					usergroup.each(function(){
+						if($(this).attr("value") == data.usergroup[i]){
+							$(this).attr("checked","checked");
+						}
+					});
+
+				};
+				$("#usergrp  tr:first").append(usernametd);
+				$("#usergrp  tr:eq(1)")(1).append(usergrptd);
+			});
+		}
+
+		function getallusers(){
 			var url = "/admin/user?action=getallusers";
 			$.getJSON(url,function(data){
 				if(data.length > 0){
 					var tbody = $("#userlist > tbody");
 					for(var i = 0; i < data.length ; i++){
 						var tr = $("<tr></tr>");
-						var usernametd = $("<td algin='center'></td>");
-						var realnametd   = $("<td algin='center'></td>");
-						var deltd       = $("<td algin='center'></td>")
+						var usernametd  = $("<td algin='center'></td>");
+						var realnametd  = $("<td algin='center'></td>");
+						var deltd       = $("<td class='del' algin='center'></td>")
 						var del         = $("<a>删除</a>");
 
+						var modifytd    = $("<td class = 'modify' algin='center'></td>")
+						var modify      = $("<a>分配群组</a>");
+
+
 						del.attr("href","#");
+						modify.attr("href","#");
+
+
 						usernametd.append(data[i].username);
 						realnametd.append(data[i].realname);
 						deltd.append(del);
+						modifytd.append(modify);
 						tr.append(usernametd);
 						tr.append(realnametd);
 						tr.append(deltd);
-
+    					tr.append(modifytd);
 						tbody.append(tr);
 					}
-					var del = tbody.find("a");
+					var del = tbody.find(".del").find("a");
 					
 					del.each(function(i){
 						$(this).click(function(){
 							deluser(data[i].username);
-						}
-						);
+						});							
 					});
 					
+					var modify = tbody.find(".modify").find("a");
+
+					modify.each(function(i){
+						$(this).click(function(){
+							getuserbyname(data[i].username);
+						});							
+
+					});
 				}
 
 			}
 			);
+
+		}
+    		$(document).ready(function() {
+    			getallusers();
 		});
 </script>
 </body>

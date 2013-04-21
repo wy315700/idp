@@ -2,6 +2,7 @@ package org.cas.iie.idp.Servlets.admin;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -50,6 +51,25 @@ public class userServlet extends HttpServlet{
 					useradmin.close();
 					response.getWriter().print(result);
 				}
+			}else if(action.equals("getuser")){
+				String username = request.getParameter("username");
+				if(username != null){
+					userAdmin useradmin = new userAdmin();
+					UserRole user = useradmin.getUserByName(username);
+					Gson json = new Gson();
+					String returnuser = json.toJson(user);
+					response.setCharacterEncoding("utf-8");
+					response.getWriter().println(returnuser);
+				}
+			}else if(action.equals("modifyusergroup")){
+				String username = request.getParameter("username");
+				String[] groups = request.getParameterValues("groupname");
+				UserRole user = new UserRole();
+				user.setUsername(username);
+				user.setUsergroup(Arrays.asList(groups));
+				userAdmin useradmin = new userAdmin();
+				useradmin.modifyUseGroup(user);
+				response.getWriter().print("true");
 			}
 		}
 		
