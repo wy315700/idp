@@ -184,8 +184,18 @@ public class userAdmin {
 		return true;
 	}
 	public boolean deleteuser(String username){
-		UserRole user = getUserByName(username,false);
-		return ldaphelper.delete(user.getUserDN());
+		UserRole user = getUserByName(username,true);
+		if(user == null){
+			return false;
+		}
+		groupAdmin groupadmin = new groupAdmin();
+		for(String groupname : user.getUsergroup()){
+			GroupRole group = groupadmin.getGroupByName(groupname);
+			groupadmin.deleteUserFromGroup(group, user);
+		}
+		user = getUserByName(username,false);
+		boolean result = ldaphelper.delete(user.getUserDN());
+		return result;
 	}
 
 }
