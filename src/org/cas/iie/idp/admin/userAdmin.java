@@ -35,6 +35,9 @@ public class userAdmin {
 			return false;
 		}
 		
+		if(getUserByName(user.getUsername(), true) != null){
+			return false;
+		}
 		Attributes attrs = new BasicAttributes(true);
 		
 		Attribute objectclass = new BasicAttribute("objectClass");
