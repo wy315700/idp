@@ -29,15 +29,15 @@
         <div id="innerlogin">
            	<form method = "post" action = "login" id = "loginform" name="login" onsubmit = "return checkform();">
            		<!-- 表单提交给logincheck.php -->
-                <p>Enter your username:</p>
+                <p>用户名:</p>
                 <input type="text" class="logininput" name="username" >
-                <p>Enter your password:</p>
+                <p>密码:</p>
                 <input type="password" class="logininput" name="password">
                 <input type="hidden" class="logininput" name="SAMLrequest">
-                <input type="submit" class="loginbtn" value="Submit"><br>
+               <!-- <input type="submit" class="loginbtn" value="Submit"><br> -->
             </form>
-            <input type="submit" class="loginbtn" value="Submit" onclick = "checklogin();"><br>
-            <p><a href="" title="Forgoteen Password?">Forgotten Password?</a></p>
+            <input type="submit" class="loginbtn" value="登录" onclick = "checklogin();"><br>
+           <!-- <p><a href="" title="Forgoteen Password?">Forgotten Password?</a></p>-->
         </div>
     </div>
         <img src="../img/login_fade.png" alt="Fade" >

@@ -91,7 +91,7 @@ public class LDAPhelper implements ILDAPDriver{
 			long start = System.currentTimeMillis();
 			ctx.modifyAttributes(DN, DirContext.REPLACE_ATTRIBUTE, attrs);
 			long end = System.currentTimeMillis();
-			System.out.println(end-start);
+			System.out.println("delete time :"+(end-start));
 			return true;
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
@@ -107,7 +107,10 @@ public class LDAPhelper implements ILDAPDriver{
 		sc.setReturningAttributes(returnAttributions);
 		sc.setReturningObjFlag(true);
 		try {
+			long start = System.currentTimeMillis();
 			NamingEnumeration result = ctx.search(dn,filter,filtervalues, sc);
+			long end = System.currentTimeMillis();
+			System.out.println("search time :"+(end-start));
 			return result;
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block

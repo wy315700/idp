@@ -100,7 +100,7 @@ public class userAdmin {
 		}
         return null;
 	}
-	public UserRole getUserByName(String username) {
+	public UserRole getUserByName(String username,boolean inNameSpace) { // inNameSpace =true DN包含命名空间
 		// TODO Auto-generated method stub
 		UserRole user = new UserRole();
 		user.setUsername(username);
@@ -115,8 +115,11 @@ public class userAdmin {
 			}
 			if(enm.hasMore()){
 				SearchResult entry = (SearchResult)enm.next();
-				
-				String userDN = entry.getNameInNamespace();
+				String userDN = null;
+				if(inNameSpace)
+					userDN = entry.getNameInNamespace();
+				else
+					userDN = entry.getName()+",ou=member";
 				
 				user.setUserDN(userDN);
 				
@@ -168,14 +171,14 @@ public class userAdmin {
         return user;
 	}
 	public boolean modifyUseGroup(UserRole user){
-		UserRole preuser = getUserByName(user.getUsername());
+		UserRole preuser = getUserByName(user.getUsername(),true);
 		user.setUserDN(preuser.getUserDN());
 		groupAdmin groupadmin = new groupAdmin();
 		groupadmin.modifyGroupMembers(user);
 		return true;
 	}
 	public boolean deleteuser(String username){
-		UserRole user = getUserByName(username);
+		UserRole user = getUserByName(username,false);
 		return ldaphelper.delete(user.getUserDN());
 	}
 

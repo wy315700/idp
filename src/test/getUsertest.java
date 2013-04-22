@@ -26,7 +26,7 @@ public class getUsertest {
 		//useradmin.addUser(user);
 		//List<UserRole> users = useradmin.getAllUsers(0,0);
 		long start = System.currentTimeMillis();
-		UserRole user = useradmin.getUserByName("wangyang");
+		UserRole user = useradmin.getUserByName("wangyang",true);
 		user.addUsergroup("awq");
 		useradmin.modifyUseGroup(user);
 		long end = System.currentTimeMillis();
