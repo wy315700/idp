@@ -139,6 +139,9 @@ public class userAdmin {
 				
 				user = getUserGroup(user);
 			}
+			else{
+				user = null;
+			}
         } catch (NamingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
