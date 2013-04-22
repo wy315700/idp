@@ -73,6 +73,7 @@
 			$.getJSON(url,function(data){
 				if(data.length > 0){
 					var tbody = $("#grouplist > tbody");
+					tbody.empty();
 					for(var i = 0; i < data.length ; i++){
 						var tr = $("<tr></tr>");
 						var groupnametd = $("<td algin='center'></td>");
