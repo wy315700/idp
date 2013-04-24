@@ -27,25 +27,10 @@
     
     <ul id="nav">
         <li>
-        <a class="collapsed heading" >群组管理</a>
+        <a class="collapsed heading" >用户管理</a>
         <ul class="navigation">
-        <li><a href="group/grpadd.html" title="添加群组" target="right">添加群组</a></li>
-        <li><a href="group/grplist.html" title="查看群组" target="right">查看群组</a></li>
+        <li><a href="tenant/tenantadd.html" title="修改属性" target="right">修改属性</a></li>
      	</ul>
-        </li>
-            
-            <li><a class="expanded heading">用户管理</a>
-                <ul class="navigation">
-                    <li><a href="user/useradd.html" title="增加用户" class="likelogin" target="right">增加用户</a></li>
-                    <li><a href="user/userlist.html" title="查看用户" target="right">查看用户</a></li>
-                    <li><a href="user/usersearch.html" title="用户查询" target="right">用户查询</a></li>
-                </ul>
-            </li>
-            <li><a class="expanded heading">网站管理</a>
-                <ul class="navigation">
-                    <li><a href="saml/samllist.html" title="修改saml" class="likelogin" target="right">修改saml</a></li>
-                </ul>
-            </li>            
     </ul>
        
     </div>
@@ -75,12 +60,7 @@ function getCookie(c_name){
     }
 }
     
-    $(document).ready(function(){
-        var adminname = getCookie("adminname");
-        if(adminname != null){
-            $(".username").text(adminname);
-        }
-    });
+
     </script>
 </body>
 </html>

@@ -10,7 +10,7 @@
 </head>
 <script language="javascript">
 		function firm(){
-			if(confirm("是否删除此学生？")){
+			if(confirm("是否删除此租户？")){
 				return true;
 			}
                         else
@@ -34,7 +34,7 @@
     <!-- 右侧主页面上部导航条结束 -->
     
 	<div>
-    	<table id="userlist" border='0'>
+    	<table id="tenantlist" border='0'>
     	<thead>
 		<tr>
 			<th>租户名</th><th>租户SSO URL</th><th>租户管理员</th><th>修改</th><th>删除</th>
@@ -50,6 +50,25 @@
 
 		</tbody>
 		</table>
+    <table id="usergrp" border='0' >
+        <tr>
+            <td>租户</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>URL前缀</td>
+            <td><input type="text" class="tenanturl" name="tenanturl"></td>
+        </tr>
+        <tr>
+            <td>
+            <input type="button" value="修改" name="button" onclick="modifyusergroup();">
+            <input type="hidden" class="tenantname" name="tenantname">
+            <input type="hidden" name="action" value="modifyusergroup">
+            </td>
+        </tr>
+    </table>
+
+    <p id="modifyalert" style='display:none'>正在修改，请稍后</p>
     </div>
 <script language="javascript">
 		function firm(){

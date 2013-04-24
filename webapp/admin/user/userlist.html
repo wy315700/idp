@@ -68,6 +68,30 @@
         	</td>
         </tr>
 		</table>
+
+    <table>
+        <tr>
+            <td>用户名</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>真实名称</td>
+            <td><input type="text" name="realname"></td>
+        </tr>
+        <tr>
+            <td>密码</td>
+            <td><input type="password" name="password"></td>
+        </tr>
+        <tr>
+            <td>
+                <input type="button" value="添加" name="button" onclick="adduser();">
+            </td>
+            <td>
+                <input type="hidden" name="action" value="adduser">
+            </td>
+        </tr>
+    </table>
+
 		<p id="modifyalert" style='display:none'>正在修改，请稍后</p>
     </div>
 <script language="javascript">
