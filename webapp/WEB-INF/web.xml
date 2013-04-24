@@ -72,11 +72,23 @@
     <servlet>
     <servlet-name>userServlet</servlet-name>
     <servlet-class>org.cas.iie.idp.Servlets.admin.userServlet</servlet-class>
-    <load-on-startup>5</load-on-startup>
+    <load-on-startup>6</load-on-startup>
     </servlet>
 
     <servlet-mapping>
         <servlet-name>userServlet</servlet-name>
         <url-pattern>/admin/user</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+    <servlet-name>tenantServlet</servlet-name>
+    <servlet-class>org.cas.iie.idp.Servlets.admin.tenantServlet</servlet-class>
+    <load-on-startup>7</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>tenantServlet</servlet-name>
+        <url-pattern>/superadmin/tenant</url-pattern>
+    </servlet-mapping>
+    
 </web-app>

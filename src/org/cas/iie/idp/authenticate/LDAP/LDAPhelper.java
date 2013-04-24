@@ -20,7 +20,8 @@ import LOG.Logger;
 public class LDAPhelper implements ILDAPDriver{
 	private DirContext ctx = null;
 	public static String INITIAL_CONTEXT_FACTORY =  "com.sun.jndi.ldap.LdapCtxFactory";
-	public static String PROVIDER_URL =  "ldap://localhost:10389/dc=iie,dc=cas,dc=org";
+	public static String PROVIDER_URL =  "ldap://localhost:10389/";
+	public static String SUPER_DOMAIN = "dc=org";
 	public static String SECURITY_AUTHENTICATION =  "simple";
 	private static String username = "uid=admin,dc=iie,dc=cas,dc=org";
 	private static String password = "123456";
@@ -64,7 +65,10 @@ public class LDAPhelper implements ILDAPDriver{
 	public boolean create(String DN,Attributes attrs){
 		getDirContext();
 		try {
+			long start = System.currentTimeMillis();
 			ctx.createSubcontext(DN, attrs);
+			long end = System.currentTimeMillis();
+			System.out.println("create "+DN+" time :"+(end-start));
 			return true;
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
@@ -76,7 +80,10 @@ public class LDAPhelper implements ILDAPDriver{
 	public boolean delete(String dn){
 		getDirContext();
 		try {
+			long start = System.currentTimeMillis();
 			ctx.destroySubcontext(dn);
+			long end = System.currentTimeMillis();
+			System.out.println("delete "+dn+"time :"+(end-start));
 			return true;
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
@@ -91,7 +98,7 @@ public class LDAPhelper implements ILDAPDriver{
 			long start = System.currentTimeMillis();
 			ctx.modifyAttributes(DN, DirContext.REPLACE_ATTRIBUTE, attrs);
 			long end = System.currentTimeMillis();
-			System.out.println("delete time :"+(end-start));
+			System.out.println("modify "+DN+" time :"+(end-start));
 			return true;
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block

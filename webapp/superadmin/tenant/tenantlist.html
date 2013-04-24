@@ -39,18 +39,18 @@
 		<tr>
 			<th>租户名</th><th>租户SSO URL</th><th>租户管理员</th><th>修改</th><th>删除</th>
 		</tr>
+		</thead>
+		<tbody>
         <tr>
             <td>租户1</td><td>http://tenant1.sso.example.org/</td><td>管理员1</td><td>修改</td><td>删除</td>
         </tr>
         <tr>
             <td>租户2</td><td>http://tenant2.sso.example.org/</td><td>管理员2</td><td>修改</td><td>删除</td>
         </tr>    
-		</thead>
-		<tbody>
-
+	
 		</tbody>
 		</table>
-    <table id="usergrp" border='0' >
+    <table id="tenantmodify" border='0' style="display:none">
         <tr>
             <td>租户</td>
             <td></td>
@@ -72,7 +72,7 @@
     </div>
 <script language="javascript">
 		function firm(){
-			if(confirm("是否删除此用户？")){
+			if(confirm("是否删除此租户？")){
 				
 				return true;
 			}
@@ -80,12 +80,12 @@
                 return false;
             }
 		}
-		function deluser(username){
+		function deltenant(tenantname){
 			if(firm() == false){
 				return;
 			}
 
-			var url = "/admin/user?action=deluser&username="+username;
+			var url = "/superadmin/tenant?action=deltenant&tenantname="+tenantname;
 			url = encodeURI(url);
 
 			$.get(url,function(data){
@@ -100,32 +100,34 @@
 		}
 
     		$(document).ready(function() {
-			var url = "/admin/user?action=getallusers";
+			var url = "/superadmin/tenant?action=getalltenants";
 			$.getJSON(url,function(data){
 				if(data.length > 0){
-					var tbody = $("#userlist > tbody");
+
+					var tbody = $("#tenantlist > tbody");
+					tbody.empty();
 					for(var i = 0; i < data.length ; i++){
 						var tr = $("<tr></tr>");
-						var usernametd = $("<td algin='center'></td>");
-						var realnametd   = $("<td algin='center'></td>");
-						var deltd       = $("<td algin='center'></td>")
-						var del         = $("<a>删除</a>");
+						var nametd = $("<td algin='center'></td>");
+						var urltd  = $("<td algin='center'></td>");
+						var deltd  = $("<td class='del'algin='center'></td>")
+						var del    = $("<a>删除</a>");
 
 						del.attr("href","#");
-						usernametd.append(data[i].username);
-						realnametd.append(data[i].realname);
+						nametd.append(data[i].tenantname);
+						urltd.append(data[i].tenanturl);
 						deltd.append(del);
-						tr.append(usernametd);
-						tr.append(realnametd);
+						tr.append(nametd);
+						tr.append(urltd);
 						tr.append(deltd);
 
 						tbody.append(tr);
 					}
-					var del = tbody.find("a");
+					var del = tbody.find(".del").find("a");
 					
 					del.each(function(i){
 						$(this).click(function(){
-							deluser(data[i].username);
+							deltenant(data[i].tenantname);
 						}
 						);
 					});

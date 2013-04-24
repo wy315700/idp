@@ -11,28 +11,28 @@
 
 <script language="javascript">
 		function checkadd(){
-			if(useradd.username.value==""){
+			if(tenantadd.tenantname.value==""){
 				
-                alert("用户名不能为空！");
+                alert("租户名不能为空！");
 				return false;
 			}
-			if(useradd.realname.value==""){
+			if(tenantadd.tenantadmin.value==""){
 				
-                alert("真实姓名不能为空！");
+                alert("租户管理员不能为空！");
 				return false;
 			}
-            if(useradd.password.value==""){
+            if(tenantadd.tenantpassword.value==""){
 				
-                alert("密码不能为空！");
+                alert("管理员密码不能为空！");
 				return false;
 			}
 			return true;
 		}
-		function adduser(){
+		function addtenant(){
 			if(checkadd() == true){
 				var data;
-        		data = $('#useradd').serialize();
-        		$.post("/admin/user",data,function(data){
+        		data = $('#tenantadd').serialize();
+        		$.post("/superadmin/tenant",data,function(data){
         			if(data == "true"){
         				alert("add succesful");
         				document.location.reload();
@@ -53,7 +53,7 @@
 							break;
 
 					if(i == 2){
-						adduser();
+						addtenant();
 					}
 
 						i = (i + 1) % this.form.elements.length;
@@ -79,25 +79,25 @@
     </div>
     <!-- 右侧主页面上部导航条结束 -->
     
-<form method="post" action="#" name="useradd" id="useradd">
+<form method="post" action="#" name="tenantadd" id="tenantadd">
 
 <table>
 		<tr>
 			<td>租户名</td>
-			<td><input type="text" name="username"></td>
+			<td><input type="text" name="tenantname"></td>
 		</tr>
 		<tr>
 			<td>租户管理员用户名</td>
-			<td><input type="text" name="realname"></td>
+			<td><input type="text" name="tenantadmin"></td>
 		</tr>
 		<tr>
 			<td>租户管理员密码</td>
-			<td><input type="password" name="password"></td>
+			<td><input type="password" name="tenantpassword"></td>
 		</tr>
 		<tr>
 			<td>
-		<input type="button" value="添加" name="button" onclick="adduser();">
-		<td><input type="hidden" name="action" value="adduser"></td>
+		<input type="button" value="添加" name="button" onclick="addtenant();">
+		<td><input type="hidden" name="action" value="addtenant"></td>
 
 			</td>
 		</tr>
