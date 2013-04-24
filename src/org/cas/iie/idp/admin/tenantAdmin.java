@@ -1,5 +1,7 @@
 package org.cas.iie.idp.admin;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,8 @@ import javax.naming.directory.SearchResult;
 import org.cas.iie.idp.authenticate.LDAP.LDAPhelper;
 import org.cas.iie.idp.user.TenantRole;
 import org.cas.iie.idp.user.UserRole;
+
+import sun.misc.BASE64Encoder;
 
 import LOG.Logger;
 
@@ -36,13 +40,33 @@ public class tenantAdmin {
 		objectclass.add("top");
 		attrs.put(objectclass);
 		attrs.put("o", tenant.getTenantname());
+		attrs.put("l", tenant.getTenantadminname());
+		
+		String password = tenant.getTenantadminpassword();
+		String algorithm = "MD5";
+		if(password != null){
+			MessageDigest md = null;
+			try {
+				md = MessageDigest.getInstance(algorithm);
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			md.update(password.getBytes());
+			byte[] bytes = md.digest();
+			BASE64Encoder base64encoder = new BASE64Encoder();
+			String hash = base64encoder.encode(bytes);
+			password = "{"+algorithm+"}"+hash;
+			attrs.put("userPassword", password);
+		}
 
+		
 		return ldaphelper.create("o="+tenant.getTenantname()+","+LDAPhelper.SUPER_DOMAIN, attrs);
 	}
 	public List<TenantRole> getAllTenant(){
 	    String base = LDAPhelper.SUPER_DOMAIN;
         String filter = "(objectClass=organization)";
-        String[] returnAttr = new String[] {"o"};
+        String[] returnAttr = new String[] {"o","l"};
         List<TenantRole> tenants = new ArrayList<TenantRole>(); 
         try {
 			NamingEnumeration enm = ldaphelper.search(base, filter, null, returnAttr);
@@ -54,9 +78,13 @@ public class tenantAdmin {
 				Attributes attrs = entry.getAttributes();
 				TenantRole tenant = new TenantRole();
 				Attribute oAttr = attrs.get("o");
+				Attribute lAttr = attrs.get("l");
 				
 				tenant.setTenantname(oAttr.get().toString());	
 				tenant.setTenanturl(oAttr.get().toString());
+				if(lAttr != null){
+					tenant.setTenantadminname(lAttr.get().toString());
+				}
 				tenant.setTenantDN(entry.getNameInNamespace());
 				tenants.add(tenant);
 			}

@@ -110,15 +110,18 @@
 						var tr = $("<tr></tr>");
 						var nametd = $("<td algin='center'></td>");
 						var urltd  = $("<td algin='center'></td>");
+						var adminnametd = $("<td algin='center'></td>");
 						var deltd  = $("<td class='del'algin='center'></td>")
 						var del    = $("<a>删除</a>");
 
 						del.attr("href","#");
 						nametd.append(data[i].tenantname);
 						urltd.append(data[i].tenanturl);
+						adminnametd.append(data[i].tenantadminname);
 						deltd.append(del);
 						tr.append(nametd);
 						tr.append(urltd);
+						tr.append(adminnametd);
 						tr.append(deltd);
 
 						tbody.append(tr);

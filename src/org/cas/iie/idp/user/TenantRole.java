@@ -4,6 +4,8 @@ public class TenantRole {
 	String tenantname;
 	String tenanturl;
 	String tenantDN;
+	String tenantadminname;
+	String tenantadminpassword;
 	public String getTenantname() {
 		return tenantname;
 	}
@@ -22,10 +24,24 @@ public class TenantRole {
 	public void setTenantDN(String tenantDN) {
 		this.tenantDN = tenantDN;
 	}
+	
+	public String getTenantadminname() {
+		return tenantadminname;
+	}
+	public void setTenantadminname(String tenantadminname) {
+		this.tenantadminname = tenantadminname;
+	}
+	public void setTenantadminpassword(String tenantadminpassword) {
+		this.tenantadminpassword = tenantadminpassword;
+	}
+	
+	public String getTenantadminpassword() {
+		return tenantadminpassword;
+	}
 	@Override
 	public String toString() {
 		return "TenantRole [tenantname=" + tenantname + ", tenanturl="
-				+ tenanturl + ", tenantDN=" + tenantDN + "]";
+				+ tenanturl + ", tenantDN=" + tenantDN + ", tenantadminname="
+				+ tenantadminname + "]";
 	}
-	
 }

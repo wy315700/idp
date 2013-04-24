@@ -49,6 +49,8 @@ public class tenantServlet extends HttpServlet{
 					TenantRole tenant = new TenantRole();
 					tenant.setTenantname(tenantname);
 					tenant.setTenanturl(tenantname);
+					tenant.setTenantadminname(tenantadminname);
+					tenant.setTenantadminpassword(tenantpassword);
 					boolean result = tenantadmin.addTenant(tenant);
 					returnstate(result,response);
 				}
