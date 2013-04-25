@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.cas.iie.idp.authenticate.LDAP.LDAPhelper;
+
 public class DefaultFilter implements Filter {
 
 	@Override
@@ -25,6 +27,16 @@ public class DefaultFilter implements Filter {
 		HttpServletRequest request = (HttpServletRequest)req;
 		HttpServletResponse response = (HttpServletResponse)res;
 		System.out.println("拦截 URI="+request.getRequestURL());
+		String servername = request.getServerName();
+		String tenant = servername.substring(0, servername.indexOf("."));
+		if(!tenant.equals("127")){
+			LDAPhelper.domain = "o="+tenant;
+		}else{
+			LDAPhelper.domain = null;
+		}
+			
+		System.out.println("拦截 tenant="+tenant);
+
 		/*
 		HttpSession session = request.getSession(false);
 		String requestUrl = request.getRequestURL().toString().toLowerCase();

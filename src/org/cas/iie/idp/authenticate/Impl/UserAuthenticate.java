@@ -33,7 +33,7 @@ public class UserAuthenticate {
 	}
 	private String getUserDN(String username) throws NamingException{
 		LDAPconnect();
-		String base = "ou=member";
+		String base = "ou=member,"+LDAPhelper.domain + "," + LDAPhelper.SUPER_DOMAIN;
         String filter = "(&(objectClass=inetOrgPerson)(cn={0}))";           
         SearchControls ctls = new SearchControls();
         ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);

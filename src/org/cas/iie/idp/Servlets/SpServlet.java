@@ -21,7 +21,7 @@ public class SpServlet extends HttpServlet {
 	private static String PROVIDE_NAME = "sp.example.org";
 	private static String ACS_URL = "http://192.168.112.122:8080/sp";
 	
-	private static String IDP_URL = "http://192.168.112.122:8080/sso";
+	private static String IDP_URL = "http://iie.example.org:8080/sso";
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

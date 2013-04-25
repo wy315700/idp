@@ -42,7 +42,7 @@ public class GetUserByLdap implements IGetUser {
 			if(enm.hasMore()){
 				SearchResult entry = (SearchResult)enm.next();
 				
-				String userDN = entry.getNameInNamespace();
+				String userDN = entry.getName()+",ou=member";
 				
 				user.setUserDN(userDN);
 				

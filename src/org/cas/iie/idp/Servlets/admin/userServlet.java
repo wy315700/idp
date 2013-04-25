@@ -55,7 +55,7 @@ public class userServlet extends HttpServlet{
 				String username = request.getParameter("username");
 				if(username != null){
 					userAdmin useradmin = new userAdmin();
-					UserRole user = useradmin.getUserByName(username,true);
+					UserRole user = useradmin.getUserByName(username);
 					Gson json = new Gson();
 					String returnuser = json.toJson(user);
 					response.setCharacterEncoding("utf-8");

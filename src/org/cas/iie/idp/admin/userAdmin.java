@@ -35,7 +35,7 @@ public class userAdmin {
 			return false;
 		}
 		
-		if(getUserByName(user.getUsername(), true) != null){
+		if(getUserByName(user.getUsername()) != null){
 			return false;
 		}
 		Attributes attrs = new BasicAttributes(true);
@@ -103,7 +103,7 @@ public class userAdmin {
 		}
         return null;
 	}
-	public UserRole getUserByName(String username,boolean inNameSpace) { // inNameSpace =true DN包含命名空间
+	public UserRole getUserByName(String username) {
 		// TODO Auto-generated method stub
 		UserRole user = new UserRole();
 		user.setUsername(username);
@@ -119,10 +119,7 @@ public class userAdmin {
 			if(enm.hasMore()){
 				SearchResult entry = (SearchResult)enm.next();
 				String userDN = null;
-				if(inNameSpace)
-					userDN = entry.getNameInNamespace();
-				else
-					userDN = entry.getName()+",ou=member";
+				userDN = entry.getName()+",ou=member";
 				
 				user.setUserDN(userDN);
 				
@@ -177,14 +174,14 @@ public class userAdmin {
         return user;
 	}
 	public boolean modifyUseGroup(UserRole user){
-		UserRole preuser = getUserByName(user.getUsername(),true);
+		UserRole preuser = getUserByName(user.getUsername());
 		user.setUserDN(preuser.getUserDN());
 		groupAdmin groupadmin = new groupAdmin();
 		groupadmin.modifyGroupMembers(user);
 		return true;
 	}
 	public boolean deleteuser(String username){
-		UserRole user = getUserByName(username,true);
+		UserRole user = getUserByName(username);
 		if(user == null){
 			return false;
 		}
@@ -193,7 +190,6 @@ public class userAdmin {
 			GroupRole group = groupadmin.getGroupByName(groupname);
 			groupadmin.deleteUserFromGroup(group, user);
 		}
-		user = getUserByName(username,false);
 		boolean result = ldaphelper.delete(user.getUserDN());
 		return result;
 	}

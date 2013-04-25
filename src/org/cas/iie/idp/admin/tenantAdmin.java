@@ -60,11 +60,28 @@ public class tenantAdmin {
 			attrs.put("userPassword", password);
 		}
 
+		boolean result = ldaphelper.create("o="+tenant.getTenantname(), attrs);
+		//create group
+		attrs = new BasicAttributes(true);
+		objectclass = new BasicAttribute("objectClass");
+		objectclass.add("organizationalUnit");
+		objectclass.add("top");
+		attrs.put(objectclass);
+		attrs.put("ou", "group");
 		
-		return ldaphelper.create("o="+tenant.getTenantname()+","+LDAPhelper.SUPER_DOMAIN, attrs);
+		result = ldaphelper.create("ou=group,o="+tenant.getTenantname(), attrs);
+		//create member
+		attrs = new BasicAttributes(true);
+		objectclass = new BasicAttribute("objectClass");
+		objectclass.add("organizationalUnit");
+		objectclass.add("top");
+		attrs.put(objectclass);
+		attrs.put("ou", "member");
+		result = ldaphelper.create("ou=member,o="+tenant.getTenantname(), attrs);
+		return result;
 	}
 	public List<TenantRole> getAllTenant(){
-	    String base = LDAPhelper.SUPER_DOMAIN;
+	    String base = null;
         String filter = "(objectClass=organization)";
         String[] returnAttr = new String[] {"o","l"};
         List<TenantRole> tenants = new ArrayList<TenantRole>(); 
@@ -100,7 +117,7 @@ public class tenantAdmin {
 	public TenantRole getTenantByName(String tenantname){
 		TenantRole tenant = new TenantRole();
 		tenant.setTenantname(tenantname);
-	    String base = LDAPhelper.SUPER_DOMAIN;
+	    String base = null;
         String filter = "(&(objectClass=organization)(o={0}))";
         String[] returnAttr = new String[] {"o"};
         

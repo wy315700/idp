@@ -22,13 +22,21 @@ public class LDAPhelper implements ILDAPDriver{
 	public static String INITIAL_CONTEXT_FACTORY =  "com.sun.jndi.ldap.LdapCtxFactory";
 	public static String PROVIDER_URL =  "ldap://localhost:10389/";
 	public static String SUPER_DOMAIN = "dc=org";
+	public static String domain = null;
+	private String suffix = null;
 	public static String SECURITY_AUTHENTICATION =  "simple";
 	private static String username = "uid=admin,dc=iie,dc=cas,dc=org";
 	private static String password = "123456";
 	private static String configfile = "apacheds.properties";
 	
-	public void LDAPhelper(){
+	public LDAPhelper(){
 		getDirContext();
+		StringBuffer base = new StringBuffer();
+		if(domain != null){
+			base.append(domain+",");
+		}
+		base.append(SUPER_DOMAIN);
+		suffix = base.toString();
 	}
 	private void getDirContext(){
 		if(ctx == null){
@@ -62,13 +70,18 @@ public class LDAPhelper implements ILDAPDriver{
 			ctx = null;
 		}
 	}
-	public boolean create(String DN,Attributes attrs){
+	public boolean create(String base,Attributes attrs){
 		getDirContext();
+		if(base != null){
+			base = base+","+suffix;
+		}else{
+			base = suffix;
+		}
 		try {
 			long start = System.currentTimeMillis();
-			ctx.createSubcontext(DN, attrs);
+			ctx.createSubcontext(base, attrs);
 			long end = System.currentTimeMillis();
-			System.out.println("create "+DN+" time :"+(end-start));
+			System.out.println("create "+base+" time :"+(end-start));
 			return true;
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
@@ -77,13 +90,18 @@ public class LDAPhelper implements ILDAPDriver{
 		}
 		return false;
 	}
-	public boolean delete(String dn){
+	public boolean delete(String base){
 		getDirContext();
+		if(base != null){
+			base = base+","+suffix;
+		}else{
+			base = suffix;
+		}
 		try {
 			long start = System.currentTimeMillis();
-			ctx.destroySubcontext(dn);
+			ctx.destroySubcontext(base);
 			long end = System.currentTimeMillis();
-			System.out.println("delete "+dn+"time :"+(end-start));
+			System.out.println("delete "+base+" time :"+(end-start));
 			return true;
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
@@ -92,13 +110,18 @@ public class LDAPhelper implements ILDAPDriver{
 		}
 		return false;
 	}
-	public boolean modify(String DN,Attributes attrs){
+	public boolean modify(String base,Attributes attrs){
 		getDirContext();
+		if(base != null){
+			base = base+","+suffix;
+		}else{
+			base = suffix;
+		}
 		try {
 			long start = System.currentTimeMillis();
-			ctx.modifyAttributes(DN, DirContext.REPLACE_ATTRIBUTE, attrs);
+			ctx.modifyAttributes(base, DirContext.REPLACE_ATTRIBUTE, attrs);
 			long end = System.currentTimeMillis();
-			System.out.println("modify "+DN+" time :"+(end-start));
+			System.out.println("modify "+base+" time :"+(end-start));
 			return true;
 		} catch (NamingException e) {
 			// TODO Auto-generated catch block
@@ -107,15 +130,20 @@ public class LDAPhelper implements ILDAPDriver{
 		}
 		return false;
 	}
-	public NamingEnumeration search(String dn,String filter,String[] filtervalues,String[] returnAttributions){
+	public NamingEnumeration search(String base,String filter,String[] filtervalues,String[] returnAttributions){
 		getDirContext();
+		if(base != null){
+			base = base+","+suffix;
+		}else{
+			base = suffix;
+		}
 		SearchControls sc = new SearchControls();
 		sc.setSearchScope(SearchControls.SUBTREE_SCOPE);
 		sc.setReturningAttributes(returnAttributions);
 		sc.setReturningObjFlag(true);
 		try {
 			long start = System.currentTimeMillis();
-			NamingEnumeration result = ctx.search(dn,filter,filtervalues, sc);
+			NamingEnumeration result = ctx.search(base,filter,filtervalues, sc);
 			long end = System.currentTimeMillis();
 			System.out.println("search time :"+(end-start));
 			return result;
