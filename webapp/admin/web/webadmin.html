@@ -22,18 +22,18 @@
     </div>
     <!-- 右侧主页面上部导航条结束 -->
     <div>
-        <table>
+        <table id="samlconfig">
         <tr>
             <td>SAML NOT BEFORFE</td>
-            <td><input type="text" name="samlnotbefore" id="samlnotbefore"></td>
+            <td><input type="text" name="SAML_NOT_BEFORE" id="samlnotbefore"></td>
         </tr>
          <tr>
             <td>SAML NOT AFTER</td>
-            <td><input type="text" name="samlnotafter" id="samlnotafter"></td>
+            <td><input type="text" name="SAML_NOT_AFTER" id="samlnotafter"></td>
         </tr>
         <tr>
             <td>
-            <input type="button" value="修改" name="button" onclick="modifyusergroup();">
+            <input type="button" value="修改" name="button" onclick="modifyconfig();">
             <input type="hidden" name="action" value="modifyconfig">
             </td>
         </tr>
@@ -50,6 +50,22 @@
                     $("#samlnotafter").val(data.SAML_NOT_AFTER);
                 }
             });
+        }
+        function modifyconfig () {
+            var form = $("<form action=\"#\"></form>");
+            form.append($("#samlconfig"));
+            var url = "/admin/config";
+            var data=form.serialize();
+
+            $.post(url,data,function(data){
+                if(data == "true"){
+                    alert("修改成功");
+                    document.location.reload();
+                }else{
+                    alert("修改失败");
+                }
+            });
+
         }
 
         $(document).ready(function() {

@@ -23,6 +23,18 @@ public class configServlet extends HttpServlet {
 				Gson json = new Gson();
 				String returnjson = json.toJson(config);
 				response.getWriter().print(returnjson);
+			}else if(action.equals("modifyconfig")){
+				ConfigRole config = Configs.getthisconfig();
+				String SAML_NOT_BEFORE = request.getParameter("SAML_NOT_BEFORE");
+				String SAML_NOT_AFTER = request.getParameter("SAML_NOT_AFTER");
+				if(SAML_NOT_BEFORE != null){
+					config.setSAML_NOT_BEFORE(Integer.parseInt(SAML_NOT_BEFORE));
+				}
+				if(SAML_NOT_AFTER != null){
+					config.setSAML_NOT_AFTER(Integer.parseInt(SAML_NOT_AFTER));
+				}
+				boolean result = Configs.saveconfig(config);
+				response.getWriter().print(result);
 			}
 		}
 	}

@@ -12,20 +12,19 @@ public class ConfigRole {
 	public String tenantname;
 	public int SAML_NOT_BEFORE = 0;
 	public int SAML_NOT_AFTER  = 0;
-	public ConfigRole(String tenant){
-		tenantname = tenant;
-		Properties prop = new Properties();
-		try {
-			InputStream in = ConfigRole.class.getResourceAsStream("/config/"+tenant+"/prop.properties");
-			prop.load(in);
-			SAML_NOT_BEFORE = Integer.parseInt(prop.getProperty("SAML_NOT_BEFORE", "15"));
-			SAML_NOT_AFTER = Integer.parseInt(prop.getProperty("SAML_NOT_AFTER", "30"));
-			System.out.println("Config [SAML_NOT_BEFORE=" + SAML_NOT_BEFORE
-				+ ", SAML_NOT_AFTER=" + SAML_NOT_AFTER + "]");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public ConfigRole(){
+		SAML_NOT_BEFORE = 15;
+		SAML_NOT_AFTER  = 30;
+	}
+	public boolean setvalue(String key,String values){
+		if(key.equals("SAML_NOT_BEFORE")){
+			SAML_NOT_BEFORE = Integer.parseInt(values);
+		}else if(key.equals("SAML_NOT_AFTER")){
+			SAML_NOT_AFTER  = Integer.parseInt(values);
+		}else{
+			return false;
 		}
+		return true;
 	}
 	public boolean save(){
 		return false;
