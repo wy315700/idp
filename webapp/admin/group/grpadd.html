@@ -25,10 +25,10 @@
         		data = $('#groupadd').serialize();
         		$.post("/admin/group",data,function(data){
         			if(data == "true"){
-        				alert("add succesful");
+        				alert("添加成功");
         				document.location.reload();
         			}else{
-        				alert("add false");
+        				alert("添加失败");
         			}
         		}
         		);
