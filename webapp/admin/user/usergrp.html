@@ -19,6 +19,9 @@
                         }
 			
 		}
+		$(document).ready(function() {
+			$url = "/admin/user?action=getallusers"
+		});
 </script>
 <body>
 	<!-- 右侧主页面上部导航条开始 -->
@@ -40,10 +43,7 @@
 			<td>用户名</td>
 		</tr>
         <tr>
-            <td>用户1</td><td>用户1</td><td>修改</td><td>分配群组</td><td>删除</td>
-        </tr>
-        <tr>
-            <td>用户2</td><td>用户2</td><td>修改</td><td>分配群组</td><td>删除</td>
+            <td>群组</td>
         </tr>
 		</thead>
 		<tbody>

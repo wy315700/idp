@@ -5,7 +5,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link href="../styles/layout.css" rel="stylesheet" type="text/css" />
 	<link href="../themes/blue/styles.css" rel="stylesheet" type="text/css" />
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	
 </head>
 
@@ -24,13 +24,38 @@
     <div>
         <table>
         <tr>
-            <td>用户属性</td>
-            <td><input type="checkbox"></td>
+            <td>SAML NOT BEFORFE</td>
+            <td><input type="text" name="samlnotbefore" id="samlnotbefore"></td>
         </tr>
+         <tr>
+            <td>SAML NOT AFTER</td>
+            <td><input type="text" name="samlnotafter" id="samlnotafter"></td>
+        </tr>
+        <tr>
+            <td>
+            <input type="button" value="修改" name="button" onclick="modifyusergroup();">
+            <input type="hidden" name="action" value="modifyconfig">
+            </td>
+        </tr>
+
         </table>
     </div>
-	   
-</script>
+	    <script type="text/javascript">
+        function getallconfigs () {
+           var url = "/admin/config?action=getallconfigs";
+
+            $.getJSON(url,function(data){
+                if(data != null){
+                    $("#samlnotbefore").val(data.SAML_NOT_BEFORE);
+                    $("#samlnotafter").val(data.SAML_NOT_AFTER);
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            getallconfigs();
+        });
+        </script>
 </body>
 </html>
 

@@ -90,5 +90,15 @@
         <servlet-name>tenantServlet</servlet-name>
         <url-pattern>/superadmin/tenant</url-pattern>
     </servlet-mapping>
-    
+        
+    <servlet>
+    <servlet-name>configServlet</servlet-name>
+    <servlet-class>org.cas.iie.idp.Servlets.admin.configServlet</servlet-class>
+    <load-on-startup>7</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>configServlet</servlet-name>
+        <url-pattern>/admin/config</url-pattern>
+    </servlet-mapping>
 </web-app>

@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
+import org.cas.iie.idp.user.ConfigRole;
+import org.cas.iie.idp.user.Configs;
 import org.cas.iie.idp.user.UserRole;
 import org.joda.time.DateTime;
 import org.opensaml.common.SAMLException;
@@ -30,6 +32,7 @@ import org.opensaml.xml.io.MarshallingException;
 import org.opensaml.xml.io.UnmarshallingException;
 import org.opensaml.xml.schema.XSAny;
 import org.xml.sax.SAXException;
+
 
 import LOG.Logger;
 
@@ -171,7 +174,6 @@ public class SAMLresponse extends SAML {
     public Assertion createStockAuthnAssertion ()
         throws Exception
     {
-        DateTime now = new DateTime ();
         Issuer issueridp = create (Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
         issueridp.setValue(IDP_URL);
         
@@ -209,16 +211,18 @@ public class SAMLresponse extends SAML {
         Assertion assertion = 
             create (Assertion.class, Assertion.DEFAULT_ELEMENT_NAME);
         //assertion.setID ("Assertion12345789");
+        DateTime now = new DateTime ();
         assertion.setID(generator.generateIdentifier ());
         assertion.setIssueInstant (now);
         assertion.setIssuer (issuersp);
         assertion.setSubject (subject);
         assertion.getStatements ().add (authnStatement);
         
+        ConfigRole config = Configs.getthisconfig();
         Conditions conditions = create 
         		(Conditions.class, Conditions.DEFAULT_ELEMENT_NAME);
-        conditions.setNotBefore (now.minusSeconds (15));
-        conditions.setNotOnOrAfter (now.plusSeconds (30));     
+        conditions.setNotBefore (now.minusSeconds (config.SAML_NOT_BEFORE));
+        conditions.setNotOnOrAfter (now.plusSeconds (config.SAML_NOT_AFTER));     
         assertion.setConditions(conditions);
         
         return assertion;

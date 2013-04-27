@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.cas.iie.idp.authenticate.LDAP.LDAPhelper;
+import org.cas.iie.idp.user.Configs;
 
 public class DefaultFilter implements Filter {
 
@@ -29,8 +30,10 @@ public class DefaultFilter implements Filter {
 		System.out.println("拦截 URI="+request.getRequestURL());
 		String servername = request.getServerName();
 		String tenant = servername.substring(0, servername.indexOf("."));
-		if(!tenant.equals("127")){
+		String requestUrl = request.getRequestURL().toString().toLowerCase();
+		if(!tenant.equals("127") && !requestUrl.endsWith("/sp")){
 			LDAPhelper.domain = "o="+tenant;
+			Configs.setthisconfig(tenant);
 		}else{
 			LDAPhelper.domain = null;
 		}
