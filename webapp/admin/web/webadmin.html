@@ -60,10 +60,10 @@
             $.post(url,data,function(data){
                 if(data == "true"){
                     alert("修改成功");
-                    document.location.reload();
                 }else{
                     alert("修改失败");
                 }
+                document.location.reload();
             });
 
         }

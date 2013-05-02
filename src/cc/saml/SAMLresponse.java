@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
-import org.cas.iie.idp.user.ConfigRole;
+import org.cas.iie.idp.user.SamlConfigRole;
 import org.cas.iie.idp.user.Configs;
 import org.cas.iie.idp.user.UserRole;
 import org.joda.time.DateTime;
@@ -218,7 +218,7 @@ public class SAMLresponse extends SAML {
         assertion.setSubject (subject);
         assertion.getStatements ().add (authnStatement);
         
-        ConfigRole config = Configs.getthisconfig();
+        SamlConfigRole config = Configs.getthissamlconfig();
         Conditions conditions = create 
         		(Conditions.class, Conditions.DEFAULT_ELEMENT_NAME);
         conditions.setNotBefore (now.minusSeconds (config.SAML_NOT_BEFORE));

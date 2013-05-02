@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.cas.iie.idp.user.ConfigRole;
+import org.cas.iie.idp.user.SamlConfigRole;
 import org.cas.iie.idp.user.Configs;
 
 import com.google.gson.Gson;
@@ -19,12 +19,12 @@ public class configServlet extends HttpServlet {
 		String action = request.getParameter("action");
 		if(action != null){
 			if(action.equals("getallconfigs")){
-				ConfigRole config = Configs.getthisconfig();
+				SamlConfigRole config = Configs.getthissamlconfig();
 				Gson json = new Gson();
 				String returnjson = json.toJson(config);
 				response.getWriter().print(returnjson);
 			}else if(action.equals("modifyconfig")){
-				ConfigRole config = Configs.getthisconfig();
+				SamlConfigRole config = Configs.getthissamlconfig();
 				String SAML_NOT_BEFORE = request.getParameter("SAML_NOT_BEFORE");
 				String SAML_NOT_AFTER = request.getParameter("SAML_NOT_AFTER");
 				if(SAML_NOT_BEFORE != null){

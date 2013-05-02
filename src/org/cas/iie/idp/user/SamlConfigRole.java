@@ -8,11 +8,11 @@ import java.io.OutputStream;
 import java.util.Properties;
 
 
-public class ConfigRole {
+public class SamlConfigRole {
 	public String tenantname;
 	public int SAML_NOT_BEFORE = 0;
 	public int SAML_NOT_AFTER  = 0;
-	public ConfigRole(){
+	public SamlConfigRole(){
 		SAML_NOT_BEFORE = 15;
 		SAML_NOT_AFTER  = 30;
 	}

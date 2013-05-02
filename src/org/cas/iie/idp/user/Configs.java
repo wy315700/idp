@@ -13,17 +13,17 @@ import org.cas.iie.idp.admin.tenantAdmin;
 import com.mysql.jdbc.Connection;
 
 public class Configs {
-	public static Map<String, ConfigRole> configs;
-	private static ConfigRole thisconfig;
+	public static Map<String, SamlConfigRole> samlconfigs;
+	private static SamlConfigRole thissamlconfig;
 	public static  Connection con;
 
 	
-	private static String MYSQL_URL = "jdbc:mysql://127.0.0.1:3306/samlconfig";
+	private static String MYSQL_URL = "jdbc:mysql://127.0.0.1:3306/configs";
 	private static String MYSQL_USER = "root";
 	private static String MYSQL_PASS = "root";
-	private static String MYSQL_GETCONFIG_QUERY = "select * from config where tenant = ?";
-	private static String MYSQL_UPDATECONFIG_QUERY = "update config set configvalue = ? where tenant = ? and configkey = ?";
-	private static String MYSQL_INSERTCONFIG_QUERY = "insert into config (tenant,configkey,configvalue) values (?,?,?)";
+	private static String MYSQL_GETSAMLCONFIG_QUERY = "select * from samlconfig where tenant = ?";
+	private static String MYSQL_UPDATESAMLCONFIG_QUERY = "update samlconfig set configvalue = ? where tenant = ? and configkey = ?";
+	private static String MYSQL_INSERTSAMLCONFIG_QUERY = "insert into samlconfig (tenant,configkey,configvalue) values (?,?,?)";
 	public Configs(){
 	}
 	static{
@@ -41,15 +41,15 @@ public class Configs {
 		}
 
 		
-		configs = new HashMap<String, ConfigRole>();
+		samlconfigs = new HashMap<String, SamlConfigRole>();
 		tenantAdmin tenantadmin = new tenantAdmin();
 		List<TenantRole> tenants = tenantadmin.getAllTenant();
 		for(TenantRole tenant : tenants){
-			ConfigRole config = new ConfigRole();
+			SamlConfigRole config = new SamlConfigRole();
 			config.setTenantname(tenant.getTenantname());
 			PreparedStatement sta = null;
 			try {
-				sta = con.prepareStatement(MYSQL_GETCONFIG_QUERY);
+				sta = con.prepareStatement(MYSQL_GETSAMLCONFIG_QUERY);
 				sta.setString(1, tenant.getTenantname());
 				ResultSet rs = sta.executeQuery();
 				while(rs.next()){
@@ -64,63 +64,53 @@ public class Configs {
 			}
 
 			
-			configs.put(tenant.getTenantname(), config);
+			samlconfigs.put(tenant.getTenantname(), config);
 		}
 	}
-	public static boolean saveconfig(ConfigRole config){
+	public static boolean saveconfig(SamlConfigRole config){
 		PreparedStatement sta = null;
 		boolean result = true;
-		try {
-			sta = con.prepareStatement(MYSQL_UPDATECONFIG_QUERY);
-			sta.setString(2, config.getTenantname());
-			
-			sta.setString(3, "SAML_NOT_AFTER");
-			sta.setString(1, String.valueOf(config.getSAML_NOT_AFTER()));
-			
-			int row = sta.executeUpdate();
-			if(row != 1){
-				PreparedStatement anothersta = con.prepareStatement(MYSQL_INSERTCONFIG_QUERY);
-				anothersta.setString(1, config.getTenantname());
-				anothersta.setString(2, "SAML_NOT_AFTER");
-				anothersta.setString(3, String.valueOf(config.getSAML_NOT_AFTER()));
-				row = anothersta.executeUpdate();
-				if(row != 1){
-					result = false;
-				}
-			}
-			
-			sta.setString(3, "SAML_NOT_BEFORE");
-			sta.setString(1, String.valueOf(config.getSAML_NOT_BEFORE()));
-			row = sta.executeUpdate();
-			if(row != 1){
-				PreparedStatement anothersta = con.prepareStatement(MYSQL_INSERTCONFIG_QUERY);
-				anothersta.setString(1, config.getTenantname());
-				anothersta.setString(2, "SAML_NOT_AFTER");
-				anothersta.setString(3, String.valueOf(config.getSAML_NOT_AFTER()));
-				row = anothersta.executeUpdate();
-				if(row != 1){
-					result = false;
-				}
-			}
-
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			result = false;
-		}
+		result = savesamlconfigs(config.getTenantname(),"SAML_NOT_AFTER",String.valueOf(config.getSAML_NOT_AFTER()));
+		result = savesamlconfigs(config.getTenantname(),"SAML_NOT_BEFORE",String.valueOf(config.getSAML_NOT_BEFORE()));
 		return result;
 
 	}
-	
-	public static ConfigRole getConfig(String tenantname){
-		ConfigRole config = configs.get(tenantname);
+	private static boolean savesamlconfigs(String tenantname,String key,String value){
+		PreparedStatement sta = null;
+		boolean result = true;
+			try {
+				sta = con.prepareStatement(MYSQL_UPDATESAMLCONFIG_QUERY);
+				sta.setString(2, tenantname);
+				
+				sta.setString(3, key);
+				sta.setString(1, String.valueOf(value));
+				
+				int row = sta.executeUpdate();
+				if(row != 1){
+					PreparedStatement anothersta = con.prepareStatement(MYSQL_INSERTSAMLCONFIG_QUERY);
+					anothersta.setString(1, tenantname);
+					anothersta.setString(2, key);
+					anothersta.setString(3, String.valueOf(value));
+					row = anothersta.executeUpdate();
+					if(row != 1){
+						result = false;
+					}
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				result = false;
+				e.printStackTrace();
+			}
+		return result;
+	}
+	public static SamlConfigRole getSamlConfig(String tenantname){
+		SamlConfigRole config = samlconfigs.get(tenantname);
 		return config;
 	}
 	public static void setthisconfig(String tenantname){
-		thisconfig = configs.get(tenantname);
+		thissamlconfig = samlconfigs.get(tenantname);
 	}
-	public static ConfigRole getthisconfig(){
-		return thisconfig;
+	public static SamlConfigRole getthissamlconfig(){
+		return thissamlconfig;
 	}
 }
