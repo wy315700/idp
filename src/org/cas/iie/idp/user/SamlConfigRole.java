@@ -52,11 +52,10 @@ public class SamlConfigRole {
 	public void setSAML_NOT_AFTER(int sAML_NOT_AFTER) {
 		SAML_NOT_AFTER = sAML_NOT_AFTER;
 	}
-
 	@Override
 	public String toString() {
-		return "Config [SAML_NOT_BEFORE=" + SAML_NOT_BEFORE
-				+ ", SAML_NOT_AFTER=" + SAML_NOT_AFTER + "]";
+		return "SamlConfigRole [tenantname=" + tenantname
+				+ ", SAML_NOT_BEFORE=" + SAML_NOT_BEFORE + ", SAML_NOT_AFTER="
+				+ SAML_NOT_AFTER + "]";
 	}
-	
 }

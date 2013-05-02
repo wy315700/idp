@@ -34,6 +34,7 @@ public class DefaultFilter implements Filter {
 		if(!tenant.equals("127") && !requestUrl.endsWith("/sp")){
 			LDAPhelper.domain = "o="+tenant;
 			Configs.setthisconfig(tenant);
+			
 		}else{
 			LDAPhelper.domain = null;
 		}
