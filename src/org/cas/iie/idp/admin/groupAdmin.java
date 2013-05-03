@@ -43,7 +43,7 @@ public class groupAdmin {
 				Attribute cnAttr = attrs.get("cn");
 				Attribute userAttr = attrs.get("uniqueMember");
 				group.setGroupname(cnAttr.get().toString());
-				group.setGroupDN(entry.getName()+",ou=group");
+				group.setGroupDN(entry.getName()+","+searchbase);
 				if(userAttr.size() > 0){
 					for(int i = 0 ; i < userAttr.size() ; i++){
 						String username = userAttr.get(i).toString();
@@ -66,12 +66,12 @@ public class groupAdmin {
 		deleteGroup(srcgroup.getGroupname());
 		return addGroup(disgroup);
 	}
-	public boolean modifyGroupMembers(UserRole users){
+	public boolean modifyGroupMembers(UserRole users,String attrtype){
 		List<GroupRole> groups = getAllGroups(0, 0);
 		
 		for(GroupRole group : groups){
 			deleteUserFromGroup(group, users);
-			for(String groupname : users.getUsergroup()){
+			for(String groupname : users.getUsergroup().get(attrtype)){
 				if(group.getGroupname().equals(groupname)){
 					addUsertoGroup(group, users);
 				}
@@ -122,7 +122,7 @@ public class groupAdmin {
 				Attribute cnAttr = attrs.get("cn");
 				Attribute userAttr = attrs.get("uniqueMember");
 				group.setGroupname(cnAttr.get().toString());
-				group.setGroupDN(entry.getName()+",ou=group");
+				group.setGroupDN(entry.getName()+","+searchbase);
 				if(userAttr.size() > 0){
 					for(int i = 0 ; i < userAttr.size() ; i++){
 						String username = userAttr.get(i).toString();

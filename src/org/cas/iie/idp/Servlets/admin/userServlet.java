@@ -3,7 +3,10 @@ package org.cas.iie.idp.Servlets.admin;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,7 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.cas.iie.idp.admin.groupAdmin;
 import org.cas.iie.idp.admin.userAdmin;
+import org.cas.iie.idp.user.Configs;
 import org.cas.iie.idp.user.GroupRole;
+import org.cas.iie.idp.user.TenantConfigRole;
 import org.cas.iie.idp.user.UserRole;
 
 import com.google.gson.Gson;
@@ -63,10 +68,18 @@ public class userServlet extends HttpServlet{
 				}
 			}else if(action.equals("modifyusergroup")){
 				String username = request.getParameter("username");
-				String[] groups = request.getParameterValues("groupname");
 				UserRole user = new UserRole();
 				user.setUsername(username);
-				user.setUsergroup(Arrays.asList(groups));
+				for(Map.Entry<String, String> entry :Configs.getthistenantconfig().getAttributeset().entrySet()){
+					String[] groups = request.getParameterValues(entry.getKey());
+					Set<String> groupset = null;
+					if(groups == null){
+						groupset = new HashSet<String>();
+					}else{
+						groupset = new HashSet<String>(Arrays.asList(groups));
+					}
+					user.addUsergroups(entry.getKey(), groupset);
+				}
 				userAdmin useradmin = new userAdmin();
 				useradmin.modifyUseGroup(user);
 				response.getWriter().print("true");

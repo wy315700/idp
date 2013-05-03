@@ -59,9 +59,7 @@
 		<tr>
 			<td>用户名</td>
 		</tr>
-        <tr>
-            <td>群组</td>
-        </tr>
+
         <tr>
         	<td>
         	<input type="button" value="修改" name="button" onclick="modifyusergroup();">
@@ -148,25 +146,35 @@
 
 			$(".username").val(username);
 
-			var url = "/admin/group?action=getallgroups";
+			var url = "/admin/group?action=getallattrs";
 			$.getJSON(url,function(data){
-				if(data.length > 0){
-					var tr = $("#usergrp  tr:eq(1)");
-					var td = $("<td></td>");
-					for (var i = 0; i < data.length; i++) {
-						var selectgroup = $("<input type=\"checkbox\" />");
-						var groupnamelabel = $("<label></label>");
-						selectgroup.attr("name","groupname");
-						selectgroup.attr("id",data[i].groupname);
-						selectgroup.attr("value",data[i].groupname);
-						td.append(selectgroup);
-						groupnamelabel.append(data[i].groupname);
-						groupnamelabel.attr("for",data[i].groupname);
-						td.append(groupnamelabel);
-						td.append("<br/>");
+				if(data != null){
+					var tr = $("#usergrp  tr:first");
+
+					for (var index in data) {
+						var attrtr = $("<tr></tr>");
+						attrtr.attr("id",index+"tr");
+						var attrtypetd = $("<td></td>");
+						var attrcontenttd = $("<td></td>");
+						attrtypetd.append(index);
+						for (var i = 0; i < data[index].length; i++) {
+							var selectgroup = $("<input type=\"checkbox\" />");
+							var groupnamelabel = $("<label></label>");
+							selectgroup.attr("name",index);
+							selectgroup.attr("id",data[index][i].groupname);
+							selectgroup.attr("value",data[index][i].groupname);
+							attrcontenttd.append(selectgroup);
+							groupnamelabel.append(data[index][i].groupname);
+							groupnamelabel.attr("for",data[index][i].groupname);
+							attrcontenttd.append(groupnamelabel);
+							attrcontenttd.append("<br/>");
+						};
+						attrtr.append(attrtypetd);		
+						attrtr.append(attrcontenttd);	
+						tr.after(attrtr);
+	
 					};
-					tr.append(td);		
-					}
+				}
 
 			});
 
@@ -180,18 +188,18 @@
 				var usergrptd  = $("<td algin='center'></td>");
 
 				usernametd.append(data.username);
-
-				for (var i = 0; i < data.usergroup.length; i++) {
-					var usergroup = $("#usergrp  tr:eq(1)").find("input");
-					usergroup.each(function(){
-						if($(this).attr("value") == data.usergroup[i]){
-							$(this).attr("checked","checked");
-						}
-					});
-
-				};
+				for(var index in data.usergroup){
+					for (var i = 0; i < data.usergroup[index].length; i++) {
+						var usergroup = $("#"+index+"tr").find("input");
+						usergroup.each(function(){
+							if($(this).attr("value") == data.usergroup[index][i]){
+								$(this).attr("checked","checked");
+							}
+						});
+					};
+				}
 				$("#usergrp  tr:first").append(usernametd);
-				$("#usergrp  tr:eq(1)")(1).append(usergrptd);
+				//$("#usergrp  tr:eq(1)")(1).append(usergrptd);
 			});
 		}
 
@@ -208,7 +216,7 @@
 						var del         = $("<a>删除</a>");
 
 						var modifytd    = $("<td class = 'modify' algin='center'></td>")
-						var modify      = $("<a>分配群组</a>");
+						var modify      = $("<a>设置属性</a>");
 
 
 						del.attr("href","#");

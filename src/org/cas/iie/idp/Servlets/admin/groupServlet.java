@@ -2,7 +2,9 @@ package org.cas.iie.idp.Servlets.admin;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.cas.iie.idp.admin.groupAdmin;
+import org.cas.iie.idp.user.Configs;
 import org.cas.iie.idp.user.GroupRole;
 import com.google.gson.Gson;
 
@@ -30,10 +33,10 @@ public class groupServlet extends HttpServlet{
 		if(action != null){
 			if(action.equals("getallgroups")){
 				groupAdmin groupadmin = new groupAdmin(attrtype);
-				
 				List<GroupRole> groups = groupadmin.getAllGroups(0, 0);
 				Gson json = new Gson();
-				String returnGroup = json.toJson(groups);
+				String returnGroup = null;
+				returnGroup = json.toJson(groups);
 				response.getWriter().println(returnGroup);
 			}else if(action.equals("addgroup")){
 				String groupname = request.getParameter("groupname");
@@ -52,7 +55,19 @@ public class groupServlet extends HttpServlet{
 					boolean result = groupadmin.deleteGroup(groupname);
 					response.getWriter().print(result);
 				}
+			}else if(action.equals("getallattrs")){
+				Gson json = new Gson();
+				String returnGroup = null;
+				Map<String , List<GroupRole>> allgroups = new HashMap<String, List<GroupRole>>();
+				for(Map.Entry<String, String> entry: Configs.getthistenantconfig().getAttributeset().entrySet()){
+					groupAdmin groupadmin = new groupAdmin(entry.getKey());
+					List<GroupRole> groups = groupadmin.getAllGroups(0, 0);
+					allgroups.put(entry.getKey(), groups);
+				}
+				returnGroup = json.toJson(allgroups);
+				response.getWriter().println(returnGroup);
 			}
+
 		}
 		
 	}

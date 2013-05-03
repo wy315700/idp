@@ -4,6 +4,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -14,7 +16,9 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.SearchResult;
 
 import org.cas.iie.idp.authenticate.LDAP.LDAPhelper;
+import org.cas.iie.idp.user.Configs;
 import org.cas.iie.idp.user.GroupRole;
+import org.cas.iie.idp.user.TenantConfigRole;
 import org.cas.iie.idp.user.UserRole;
 
 import sun.misc.BASE64Encoder;
@@ -150,34 +154,41 @@ public class userAdmin {
 	}
 	
 	public UserRole getUserGroup(UserRole user){
-	    String base = "ou=group";
+	    String base = "ou=";
         String filter = "(&(objectClass=groupOfUniqueNames)(uniqueMember={0}))";
         String[] returnAttr = new String[] {"cn","uniqueMember"};
+        TenantConfigRole config = Configs.getthistenantconfig();
         
-        try {
-			NamingEnumeration enm = ldaphelper.search(base, filter, new String[] { user.getUserDN() }, returnAttr);
-			if(enm == null){
-				throw new NamingException("search failed");
-			}
-			while(enm.hasMore()){
-				SearchResult entry = (SearchResult)enm.next();
-				Attributes attrs = entry.getAttributes();
+        for(Map.Entry<String, String> attr : config.getAttributeset().entrySet()){
+            try {
+    			NamingEnumeration enm = ldaphelper.search(base+attr.getKey(), filter, new String[] { user.getUserDN() }, returnAttr);
+    			if(enm == null){
+    				throw new NamingException("search failed");
+    			}
+    			while(enm.hasMore()){
+    				SearchResult entry = (SearchResult)enm.next();
+    				Attributes attrs = entry.getAttributes();
 
-				Attribute cnAttr = attrs.get("cn");
-				user.addUsergroup(cnAttr.get().toString());
-			}
-        } catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			Logger.writelog(e);
-		}
+    				Attribute cnAttr = attrs.get("cn");
+    				user.addUsergroup(attr.getKey(),cnAttr.get().toString());
+    			}
+            } catch (NamingException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    			Logger.writelog(e);
+    		}
+
+        }
         return user;
 	}
 	public boolean modifyUseGroup(UserRole user){
 		UserRole preuser = getUserByName(user.getUsername());
 		user.setUserDN(preuser.getUserDN());
-		groupAdmin groupadmin = new groupAdmin();
-		groupadmin.modifyGroupMembers(user);
+		for(Map.Entry<String, Set<String>> entry : user.getUsergroup().entrySet()){
+			String attrtype = entry.getKey();
+			groupAdmin groupadmin = new groupAdmin(attrtype);
+			groupadmin.modifyGroupMembers(user,attrtype);
+		}
 		return true;
 	}
 	public boolean deleteuser(String username){
@@ -185,10 +196,13 @@ public class userAdmin {
 		if(user == null){
 			return false;
 		}
-		groupAdmin groupadmin = new groupAdmin();
-		for(String groupname : user.getUsergroup()){
-			GroupRole group = groupadmin.getGroupByName(groupname);
-			groupadmin.deleteUserFromGroup(group, user);
+		for(Map.Entry<String, Set<String>> entry : user.getUsergroup().entrySet()){
+			String attrtype = entry.getKey();
+			groupAdmin groupadmin = new groupAdmin(attrtype);
+			for(String attrname : entry.getValue()){
+				GroupRole group = groupadmin.getGroupByName(attrname);
+				groupadmin.deleteUserFromGroup(group, user);
+			}
 		}
 		boolean result = ldaphelper.delete(user.getUserDN());
 		return result;

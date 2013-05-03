@@ -1,35 +1,52 @@
 package org.cas.iie.idp.user;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class UserRole {
 	public static String USERGROUP_KEY = "usergroup";
 	private String username;
 	private String realname;
-	private List<String> usergroup;
-	
+	private Map<String , Set<String>> usergroup;
 	private String password;
 	private int userID;
 	private String userDN;
 	public UserRole() {
-		usergroup = new ArrayList<String>();
+		usergroup = new HashMap<>();
+		TenantConfigRole config = Configs.getthistenantconfig();
+		for(Map.Entry<String, String> entry : config.getAttributeset().entrySet()){
+			Set<String> set = new HashSet<String>();
+			usergroup.put(entry.getKey(), set);
+		}
 	}
 	public UserRole(String username, String password, int userID) {
 		this.username = username;
 		this.password = password;
 		this.userID = userID;
+		usergroup = new HashMap<>();
 	}
-	public boolean addUsergroup(String grpname){
-		if(grpname != null)
-			return usergroup.add(grpname);
+	public boolean addUsergroups(String attrtype,Set<String> groups){
+		if(attrtype != null && groups != null){
+			usergroup.put(attrtype, groups);
+			return true;
+		}
+		return false;
+	}
+	public boolean addUsergroup(String attrtype,String grpname){
+		if(attrtype != null && grpname != null && usergroup.containsKey(attrtype)){
+			return usergroup.get(attrtype).add(grpname);
+		}
 		else
 			return false;
 	}
-	public List<String> getUsergroup() {
+	public Map<String , Set<String>> getUsergroup() {
 		return usergroup;
 	}
-	public void setUsergroup(List<String> usergroup) {
+	public void setUsergroup( Map<String , Set<String>> usergroup) {
 		this.usergroup = usergroup;
 	}
 	public String getUsername() {
