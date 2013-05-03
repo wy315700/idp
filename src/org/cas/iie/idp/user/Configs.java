@@ -193,6 +193,9 @@ public class Configs {
 		thissamlconfig = samlconfigs.get(tenantname);
 		thistenantconfig = tenantconfigs.get(tenantname);
 	}
+	public static TenantConfigRole getthistenantconfig(){
+		return thistenantconfig;
+	}
 	public static SamlConfigRole getthissamlconfig(){
 		return thissamlconfig;
 	}

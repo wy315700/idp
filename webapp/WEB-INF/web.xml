@@ -92,13 +92,24 @@
     </servlet-mapping>
         
     <servlet>
-    <servlet-name>configServlet</servlet-name>
-    <servlet-class>org.cas.iie.idp.Servlets.admin.configServlet</servlet-class>
+    <servlet-name>samlconfigServlet</servlet-name>
+    <servlet-class>org.cas.iie.idp.Servlets.admin.samlconfigServlet</servlet-class>
     <load-on-startup>7</load-on-startup>
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>configServlet</servlet-name>
-        <url-pattern>/admin/config</url-pattern>
+        <servlet-name>samlconfigServlet</servlet-name>
+        <url-pattern>/admin/samlconfig</url-pattern>
+    </servlet-mapping>
+            
+    <servlet>
+    <servlet-name>tenantconfigServlet</servlet-name>
+    <servlet-class>org.cas.iie.idp.Servlets.admin.tenantconfigServlet</servlet-class>
+    <load-on-startup>7</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>tenantconfigServlet</servlet-name>
+        <url-pattern>/admin/tenantconfig</url-pattern>
     </servlet-mapping>
 </web-app>

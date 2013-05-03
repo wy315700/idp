@@ -19,11 +19,15 @@ import LOG.Logger;
 
 public class groupAdmin {
 	private LDAPhelper ldaphelper = null;
-	public groupAdmin() {
+	private String attrtype = null;
+	private String searchbase = "ou=";
+	public groupAdmin(String attrtype) {
+		this.attrtype = attrtype;
+		searchbase += attrtype;
 		ldaphelper = new LDAPhelper();
 	}
 	public GroupRole getGroupByName(String groupname){
-	    String base = "ou=group";
+	    String base = searchbase;
         String filter = "(&(objectClass=groupOfUniqueNames)(cn={0}))";
         String[] returnAttr = new String[] {"cn","uniqueMember"};
 		GroupRole group = new GroupRole();
@@ -102,7 +106,7 @@ public class groupAdmin {
 	}
 
 	public List<GroupRole> getAllGroups(int start , int limits){
-	    String base = "ou=group";
+	    String base = searchbase;
         String filter = "(objectClass=groupOfUniqueNames)";
         String[] returnAttr = new String[] {"cn","uniqueMember"};
         List<GroupRole> groups = new ArrayList<GroupRole>(); 
@@ -164,6 +168,6 @@ public class groupAdmin {
 			}
 		}
 		attrs.put(uniqueMember);
-		return ldaphelper.create("cn="+group.getGroupname()+",ou=group", attrs);
+		return ldaphelper.create("cn="+group.getGroupname()+","+searchbase, attrs);
 	}
 }

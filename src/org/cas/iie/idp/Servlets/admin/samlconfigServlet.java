@@ -12,7 +12,7 @@ import org.cas.iie.idp.user.Configs;
 
 import com.google.gson.Gson;
 
-public class configServlet extends HttpServlet {
+public class samlconfigServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		response.setCharacterEncoding("utf-8");

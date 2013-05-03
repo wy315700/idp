@@ -28,9 +28,9 @@
     <ul id="nav">
         <li>
         <a class="collapsed heading" >属性管理</a>
-        <ul class="navigation">
-        <li><a href="group/grpadd.html" title="添加群组" target="right">添加群组</a></li>
-        <li><a href="group/grplist.html" title="查看群组" target="right">查看群组</a></li>
+        <ul class="navigation" id="attrbution">
+        <!--<li><a href="group/grpadd.html" title="添加群组" target="right">添加群组</a></li>
+        <li><a href="group/grplist.html" title="查看群组" target="right">查看群组</a></li>-->
      	</ul>
         </li>
             
@@ -64,25 +64,76 @@
 
 function getCookie(c_name){
     if(document.cookie.length > 0){
-        c_start = document.cookie.indexOf(c_name+"=");
-        if(c_start != -1){
-            c_start = c_start + c_name.length + 1 ;
-            c_end   = document.cookie.indexOf(";",c_start);
-            if(c_end == -1){
-                c_end = document.cookie.length;
-            }
-            return unescape(document.cookie.substring(c_start,c_end));
-        }
-        return null;
+        var arr = document.cookie.match(new RegExp("(^| )"+c_name+"=([^;]*)(;|$)")); 
+        if(arr != null) 
+            return unescape(arr[2]); 
+        return null;     
     }
 }
-    
+function setCookie (c_name,c_value) {
+    // body...
+    document.cookie = c_name + "="+ escape (c_value) + ";";
+}
+function delCookie (c_name) {
+    var exp = new Date(); 
+    exp.setTime(exp.getTime() - 1); 
+    var cval=getCookie(name); 
+    if(cval!=null) 
+        document.cookie = name + "="+cval+";expires="+exp.toGMTString(); 
+}
     $(document).ready(function(){
         var adminname = getCookie("adminname");
         if(adminname != null){
             $(".username").text(adminname);
         }
+        getallattrs();
     });
+    function setattrtype (attrtype) {
+        setCookie("attrtype",attrtype);
+    }
+    function  deepCopy (obj) {
+        //return JSON.parse(JSON.stringify(obj));
+        return obj+";;";
+    }
+    function getallattrs () {
+        var url = "/admin/tenantconfig?action=getallattrs"
+
+        $.getJSON(url,function(data){
+            if(data != null){
+                var attrbutionul = $("#attrbution");
+                for(var index in data.attributeset ){
+                    var li_add = $("<li></li>");
+                    var a_add  = $("<a>添加</a>");
+                    a_add.append(data.attributeset[index]);
+                    a_add.attr("href","group/grpadd.html");
+                    a_add.attr("target","right");
+                    a_add.attr("class",index);
+
+                    li_add.append(a_add);
+                    attrbutionul.append(li_add);
+
+                    var li_list = $("<li></li>");
+                    var a_list  = $("<a>查看</a>");
+
+                    a_list.append(data.attributeset[index]);
+                    a_list.attr("href","group/grplist.html");
+                    a_list.attr("target","right");
+                    a_list.attr("class",index);
+                    li_list.append(a_list);
+                    attrbutionul.append(li_list);
+                }
+
+                var li = attrbutionul.find("li");
+
+                li.each(function(){
+                    var a = $(this).find("a");
+                    a.click(function(){
+                        setattrtype(a.attr("class"));
+                    });
+                });
+        }
+        });
+    }
     </script>
 </body>
 </html>

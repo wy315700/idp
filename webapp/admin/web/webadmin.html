@@ -42,7 +42,7 @@
     </div>
 	    <script type="text/javascript">
         function getallconfigs () {
-           var url = "/admin/config?action=getallconfigs";
+           var url = "/admin/samlconfig?action=getallconfigs";
 
             $.getJSON(url,function(data){
                 if(data != null){
@@ -54,7 +54,7 @@
         function modifyconfig () {
             var form = $("<form action=\"#\"></form>");
             form.append($("#samlconfig"));
-            var url = "/admin/config";
+            var url = "/admin/samlconfig";
             var data=form.serialize();
 
             $.post(url,data,function(data){

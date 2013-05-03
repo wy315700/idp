@@ -12,6 +12,30 @@
 
 <!-- JS部门名不为空验证 -->
 <script language="javascript">
+
+function getCookie(c_name){
+    if(document.cookie.length > 0){
+        var arr = document.cookie.match(new RegExp("(^| )"+c_name+"=([^;]*)(;|$)")); 
+        if(arr != null) 
+            return unescape(arr[2]); 
+        return null;     
+    }
+}
+function getthisattrtype () {
+	var attrname = getCookie("attrtype");
+	getattrtypedetails(attrname);
+}
+function getattrtypedetails (attrtype) {
+	var url = "/admin/tenantconfig?action=getattrdispname&attrtype="+encodeURI(attrtype);
+	$.getJSON(url,function(data){
+		if(data != null){
+			$("#groupadd td:first").prepend(data);
+			$("#addattr").append(data);
+			groupadd.attrtype.value = attrname;
+		}
+	});
+
+}
 		function checkadd(){
 			if(groupadd.groupname.value==""){
                 alert("群组名不能为空！");
@@ -56,6 +80,7 @@
 					return true;
 			});
 
+			getthisattrtype();
 		});
 </script>
 
@@ -67,7 +92,7 @@
         	<li><strong>Location:</strong></li>
             <li><a href="../right_list.php" title="返回首页">欢迎</a></li>
             <li>/</li>
-	        <li class="current">添加群组</li>
+	        <li class="current" id="addattr">添加</li>
         </ul>
     </div>
     <!-- 右侧主页面上部导航条结束 -->
@@ -75,9 +100,11 @@
 <form name="groupadd" id="groupadd" method="post" action="">
 	<table>
 		<tr>
-			<td>群组名</td>
+			<td>名</td>
 			<td><input type="text" name="groupname"></td>
 			<td><input type="hidden" name="action" value="addgroup"></td>
+			<td><input type="hidden" name="attrtype" value=""></td>
+
 		</tr>
 		<tr>
 			<td>

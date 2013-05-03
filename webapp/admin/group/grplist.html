@@ -42,8 +42,19 @@
 	    
 
 	    <script language="javascript">
+function getCookie(c_name){
+    if(document.cookie.length > 0){
+        var arr = document.cookie.match(new RegExp("(^| )"+c_name+"=([^;]*)(;|$)")); 
+        if(arr != null) 
+            return unescape(arr[2]); 
+        return null;     
+    }
+}
+function getthisattrtype () {
+	var attrname = getCookie("attrtype");
+}
 		function firm(){
-			if(confirm("是否删除此群组？")){
+			if(confirm("是否删除此属性？")){
 				
 				return true;
 			}
@@ -105,6 +116,7 @@
 
 			}
 			);
+			getthisattrtype();
 		});
 
 </script>
