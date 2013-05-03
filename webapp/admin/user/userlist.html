@@ -172,37 +172,32 @@
 						attrtr.append(attrtypetd);		
 						attrtr.append(attrcontenttd);	
 						tr.after(attrtr);
-	
 					};
+					getusergroups(username);
 				}
-
 			});
-
-
-
+		}
+		function getusergroups (username) {
 			var url = "/admin/user?action=getuser&username="+encodeURI(username);
 			$.getJSON(url,function(data){
 				$("#userlist").hide();
-				$("#usergrp").show();
 				var usernametd = $("<td algin='center'></td>");
 				var usergrptd  = $("<td algin='center'></td>");
 
 				usernametd.append(data.username);
 				for(var index in data.usergroup){
 					for (var i = 0; i < data.usergroup[index].length; i++) {
-						var usergroup = $("#"+index+"tr").find("input");
-						usergroup.each(function(){
-							if($(this).attr("value") == data.usergroup[index][i]){
-								$(this).attr("checked","checked");
-							}
-						});
+						//alert("#"+data.usergroup[index][i]);
+						$("input").filter("#"+data.usergroup[index][i]).attr("checked","checked");		
 					};
 				}
-				$("#usergrp  tr:first").append(usernametd);
+				$("#usergrp tr:first").append(usernametd);
+				$("#usergrp").show();
 				//$("#usergrp  tr:eq(1)")(1).append(usergrptd);
-			});
-		}
+				});
 
+
+		}
 		function getallusers(){
 			var url = "/admin/user?action=getallusers";
 			$.getJSON(url,function(data){
@@ -219,8 +214,8 @@
 						var modify      = $("<a>设置属性</a>");
 
 
-						del.attr("href","#");
-						modify.attr("href","#");
+						del.attr("href","javascript:void(0)");
+						modify.attr("href","javascript:void(0)");
 
 
 						usernametd.append(data[i].username);
