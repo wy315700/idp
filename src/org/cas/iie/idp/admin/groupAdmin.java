@@ -71,10 +71,8 @@ public class groupAdmin {
 		
 		for(GroupRole group : groups){
 			deleteUserFromGroup(group, users);
-			for(String groupname : users.getUsergroup().get(attrtype)){
-				if(group.getGroupname().equals(groupname)){
-					addUsertoGroup(group, users);
-				}
+			if(users.getUsergroup().get(attrtype).contains(group.getGroupname())){
+				addUsertoGroup(group, users);
 			}
 		}
 		return true;
