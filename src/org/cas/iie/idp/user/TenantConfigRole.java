@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.cas.iie.idp.admin.configAdmin;
+
 public class TenantConfigRole {
 	Map<String,String> attributeset;
 	String tenantname;
@@ -23,9 +25,13 @@ public class TenantConfigRole {
 	public void delAttribute(String key){
 		if(attributeset.containsKey(key)){
 			attributeset.remove(key);
+			configAdmin configadmin = new configAdmin();
+			configadmin.deleteAttribution(key);
 		}
 	}
 	public void addAttribute(String key,String value){
+		configAdmin configadmin = new configAdmin();
+		configadmin.addAttribute(key);
 		attributeset.put(key, value);
 	}
 	public String getTenantname() {

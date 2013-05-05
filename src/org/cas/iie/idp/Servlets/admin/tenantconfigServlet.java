@@ -54,9 +54,13 @@ public class tenantconfigServlet extends HttpServlet{
 				String attrdispname = request.getParameter("attrdispname");
 				if(attrtype != null && attrdispname != null){
 					TenantConfigRole config = Configs.getthistenantconfig();
-					config.addAttribute(attrtype,attrdispname);
-					boolean resullt = Configs.saveconfig(config);
-					response.getWriter().print(resullt);
+					if(config.getAttributeset().containsKey(attrtype)){
+						response.getWriter().print("false");
+					}else{
+						config.addAttribute(attrtype,attrdispname);
+						boolean resullt = Configs.saveconfig(config);
+						response.getWriter().print(resullt);
+					}
 				}
 			}
 		}
