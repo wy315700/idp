@@ -3,6 +3,7 @@ package org.cas.iie.idp.authenticate.Impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.naming.NamingEnumeration;
@@ -15,6 +16,8 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import org.cas.iie.idp.authenticate.IGetUser;
 import org.cas.iie.idp.authenticate.LDAP.LDAPhelper;
+import org.cas.iie.idp.user.Configs;
+import org.cas.iie.idp.user.TenantConfigRole;
 import org.cas.iie.idp.user.UserRole;
 
 import LOG.Logger;
@@ -75,27 +78,31 @@ public class GetUserByLdap implements IGetUser {
 	}
 
 	public UserRole getUserGroup(UserRole user){
-	    String base = "ou=group";
+	    String base = "ou=";
         String filter = "(&(objectClass=groupOfUniqueNames)(uniqueMember={0}))";
         String[] returnAttr = new String[] {"cn","uniqueMember"};
+        TenantConfigRole config = Configs.getthistenantconfig();
         
-        try {
-			NamingEnumeration enm = ldaphelper.search(base, filter, new String[] { user.getUserDN() }, returnAttr);
-			if(enm == null){
-				throw new NamingException("search failed");
-			}
-			while(enm.hasMore()){
-				SearchResult entry = (SearchResult)enm.next();
-				Attributes attrs = entry.getAttributes();
+        for(Map.Entry<String, String> attr : config.getAttributeset().entrySet()){
+            try {
+    			NamingEnumeration enm = ldaphelper.search(base+attr.getKey(), filter, new String[] { user.getUserDN() }, returnAttr);
+    			if(enm == null){
+    				throw new NamingException("search failed");
+    			}
+    			while(enm.hasMore()){
+    				SearchResult entry = (SearchResult)enm.next();
+    				Attributes attrs = entry.getAttributes();
 
-				Attribute cnAttr = attrs.get("cn");
-				user.addUsergroup(cnAttr.get().toString());
-			}
-        } catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			Logger.writelog(e);
-		}
+    				Attribute cnAttr = attrs.get("cn");
+    				user.addUsergroup(attr.getKey(),cnAttr.get().toString());
+    			}
+            } catch (NamingException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    			Logger.writelog(e);
+    		}
+
+        }
         return user;
 	}
 	@Override

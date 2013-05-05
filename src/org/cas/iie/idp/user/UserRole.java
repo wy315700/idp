@@ -17,11 +17,12 @@ public class UserRole {
 	private String userDN;
 	public UserRole() {
 		usergroup = new HashMap<>();
+		/*
 		TenantConfigRole config = Configs.getthistenantconfig();
 		for(Map.Entry<String, String> entry : config.getAttributeset().entrySet()){
 			Set<String> set = new HashSet<String>();
 			usergroup.put(entry.getKey(), set);
-		}
+		}*/
 	}
 	public UserRole(String username, String password, int userID) {
 		this.username = username;
@@ -37,11 +38,15 @@ public class UserRole {
 		return false;
 	}
 	public boolean addUsergroup(String attrtype,String grpname){
-		if(attrtype != null && grpname != null && usergroup.containsKey(attrtype)){
+		if(attrtype != null && grpname != null ){
+			if(!usergroup.containsKey(attrtype)){
+				usergroup.put(attrtype,new HashSet<String>());
+			}
 			return usergroup.get(attrtype).add(grpname);
 		}
-		else
+		else{
 			return false;
+		}
 	}
 	public Map<String , Set<String>> getUsergroup() {
 		return usergroup;

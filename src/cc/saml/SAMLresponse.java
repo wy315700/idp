@@ -2,8 +2,11 @@ package cc.saml;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.transform.TransformerException;
 
@@ -80,10 +83,10 @@ public class SAMLresponse extends SAML {
 	        UserRole returnuser = new UserRole();
 	        
 	        returnuser.setUsername(nameID.getValue());
-	        List<String> usergroup = readAttribution(assertion, UserRole.USERGROUP_KEY);
-	        returnuser.setUsergroup(usergroup);
-	        
-	        
+	        //List<String> usergroup = readAttribution(assertion, UserRole.USERGROUP_KEY);
+	        //returnuser.setUsergroup(usergroup);
+	        Map<String, Set<String>> userattr = readAllAttribution(assertion);
+	        returnuser.setUsergroup(userattr);
 			return returnuser;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -113,8 +116,9 @@ public class SAMLresponse extends SAML {
 	public boolean generateAuthnResponse(){
 		try {
 			Assertion assertion = createStockAuthnAssertion();
-			
-			addAttribution(assertion, UserRole.USERGROUP_KEY, user.getUsergroup());
+			for(Map.Entry<String, Set<String>> entry : user.getUsergroup().entrySet()){
+				addAttribution(assertion,entry.getKey(),new ArrayList(entry.getValue()));
+			}
 			
 			samlResponse = showResponse(assertion);
 			if(samlResponse != null){
@@ -139,6 +143,22 @@ public class SAMLresponse extends SAML {
         
         response.setInResponseTo(requestID);
         return printToString(response);
+    }
+    private Map<String, Set<String>> readAllAttribution(Assertion assertion){
+    	Map<String, Set<String> > result = new HashMap<>();
+		for (Statement statement : assertion.getStatements ()){
+            if (statement instanceof AttributeStatement)
+                for (Attribute attribute : 
+                        ((AttributeStatement) statement).getAttributes ())
+                {
+                	Set<String> set  = new HashSet<>();
+                        for (XMLObject value : attribute.getAttributeValues ())
+                            if (value instanceof XSAny)
+                            	set.add(((XSAny) value).getTextContent());
+                    result.put(attribute.getName(), set);
+                }
+		}
+		return result;
     }
 	private List<String> readAttribution(Assertion assertion,String key){
 		List<String> result = new ArrayList<String>();

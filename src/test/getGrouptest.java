@@ -10,7 +10,7 @@ public class getGrouptest {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		groupAdmin groupadmin = new groupAdmin();
+		groupAdmin groupadmin = new groupAdmin("group");
 		//System.out.println(groupadmin.getGroupByName("grp2").toString());
 		groupadmin.deleteGroup("grp2");
 		GroupRole group = new GroupRole();
