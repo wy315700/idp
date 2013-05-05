@@ -17,8 +17,8 @@
         	<li><strong>Location:</strong></li>
             <li><a href="../right_list.php" title="返回首页">欢迎</a></li>
             <li>/</li>
-	        <li class="current">群组列表</li>
-            <li class="current"><font color="red">***删除群组请慎重***</font></li>
+	        <li class="current" id="list">列表</li>
+            <li class="current"><font color="red">***删除属性请慎重***</font></li>
         </ul>
     </div>
     <!-- 右侧主页面上部导航条结束 -->
@@ -26,16 +26,10 @@
     	<table id="grouplist" border='0'>
     	<thead>
 		<tr>
-			<th>群组名称</th><th>用户数</th><th>分配用户</th><th>删除</th>
+			<th>名称</th><th>用户数</th><th>分配用户</th><th>删除</th>
 		</tr>
 		</thead>
 		<tbody>
-        <tr>
-            <td>群组1</td><td>1</td><td>分配用户</td><td>删除</td>
-        </tr>
-        <tr>
-            <td>群组2</td><td>2</td><td>分配用户</td><td>删除</td>
-        </tr>
 		</tbody>
 	</table>
     </div>
@@ -52,7 +46,20 @@ function getCookie(c_name){
 }
 function getthisattrtype () {
 	var attrname = getCookie("attrtype");
+	getattrtypedetails(attrname);
 }
+function getattrtypedetails (attrtype) {
+	var url = "/admin/tenantconfig?action=getattrdispname&attrtype="+encodeURI(attrtype);
+	$.getJSON(url,function(data){
+		if(data != null){
+			$("#grouplist th:first").prepend(data);
+			$("#list").prepend(data);
+			groupadd.attrtype.value = attrname;
+		}
+	});
+
+}
+
 		function firm(){
 			if(confirm("是否删除此属性？")){
 				

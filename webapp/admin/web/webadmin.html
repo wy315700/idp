@@ -39,8 +39,59 @@
         </tr>
 
         </table>
+
+        <table id="attrtypelist" border='0'>
+        <thead>
+        <tr>
+            <th>属性名</th><th>属性显示名称</th><th>删除</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        </table>
+
+<button value="添加属性" name="button" id="addattrbutton" onclick="$(this).hide();displayattradd();">添加属性</button>
+<table id="attraddtb" style="display:none">
+        <tr>
+            <td>属性名</td>
+            <td><input type="text" name="attrtype"></td>
+        </tr>
+        <tr>
+            <td>属性显示名称</td>
+            <td><input type="text" name="attrdispname"></td>
+        </tr>
+        <tr>
+            <td>
+        <input type="button" value="添加" name="button" onclick="addattr();">
+    </td>
+        <td><input type="hidden" name="action" value="addattr"></td>
+
+        </tr>
+</table>
+
     </div>
 	    <script type="text/javascript">
+        function addattr () {
+            var url = "/admin/tenantconfig?action=addattr";
+            var form = $("<form></form>");
+            form.append($("#attraddtb"));
+
+            var data = form.serialize();
+
+            $.post(url,data,function(data){
+                if(data == "true"){
+                        alert("添加成功");
+                        document.location.reload();
+                    }else{
+                        alert("添加失败");
+                    }
+
+            });
+        }
+        function displayattradd () {
+            $("#attrtypelist").hide();
+            $("#attraddtb").show();
+        }
         function getallconfigs () {
            var url = "/admin/samlconfig?action=getallconfigs";
 
@@ -50,6 +101,56 @@
                     $("#samlnotafter").val(data.SAML_NOT_AFTER);
                 }
             });
+
+            var url2 = "/admin/tenantconfig?action=getallattrs";
+            $.getJSON(url2,function(data){
+                if(data != null){
+                    var attrtypelisttbody = $("#attrtypelist tbody");
+                    for (var index in data.attributeset) {
+                        var tr         = $("<tr></tr>");
+                        var attrtypetd = $("<td></td>");
+                        var attrnametd = $("<td></td>");
+                        var deltd      = $("<td></td>");
+                        var dela       = $("<a href=\"javascript:void(0)\">删除</a>");
+                        attrtypetd.append(index);
+                        attrnametd.append(data.attributeset[index]);
+                        tr.append(attrtypetd);
+                        tr.append(attrnametd);
+                        attrtypelisttbody.append(tr);
+
+                        dela.attr("id","del"+index);
+                        dela.attr("name",index);
+                        deltd.append(dela);
+                        tr.append(deltd);
+                    };
+
+                    var dela = attrtypelisttbody.find("a");
+
+                    dela.each(function(i){
+                        $(this).click(function(){
+                            delattr($(this).attr("name"));
+                        }
+                        );
+                    });
+
+                    $("#addattrbutton").show();
+                }
+            });
+
+        }
+        function delattr (attrtype) {
+            var url = "/admin/tenantconfig?action=delattr&attrtype="+attrtype;
+            url = encodeURI(url);
+
+            $.get(url,function(data){
+                    if(data == "true"){
+                        alert("删除成功");
+                    }else{
+                        alert("删除失败");
+                    }
+                    document.location.reload();
+                }
+            );
         }
         function modifyconfig () {
             var form = $("<form action=\"#\"></form>");
