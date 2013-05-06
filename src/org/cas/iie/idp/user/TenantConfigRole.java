@@ -31,7 +31,9 @@ public class TenantConfigRole {
 	}
 	public void addAttribute(String key,String value){
 		configAdmin configadmin = new configAdmin();
-		configadmin.addAttribute(key);
+		if(!configadmin.isAttrbutionExists(key)){
+			configadmin.addAttribute(key);
+		}
 		attributeset.put(key, value);
 	}
 	public String getTenantname() {

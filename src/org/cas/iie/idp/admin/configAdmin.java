@@ -52,6 +52,34 @@ public class configAdmin {
 		}
         return attributions;
 	}
+	public boolean isAttrbutionExists(String attrtype){
+		String base = null;
+        String filter = "(&(objectClass=organizationalUnit)(ou={0}))";
+        String[] returnAttr = new String[] {"ou"};
+        boolean result = false;
+        try {
+			NamingEnumeration enm = ldaphelper.search(base, filter, new String[] { attrtype}, returnAttr);
+			if(enm == null){
+				throw new NamingException("search failed");
+			}
+			if(enm.hasMore()){
+				enm.next();
+				if(enm.hasMore()){
+					throw new NamingException("search failed");
+				}
+				result = true;
+			}
+			else{
+				result = false;
+			}
+        } catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = false;
+			Logger.writelog(e);
+		}
+        return result;
+	}
 	public boolean deleteAttribution(String attrtype){
 		LDAPhelper ldaphelper = new LDAPhelper();
 		return ldaphelper.delete("ou="+attrtype);
