@@ -6,7 +6,13 @@
 	<link href="../styles/layout.css" rel="stylesheet" type="text/css" />
 	<link href="../themes/blue/styles.css" rel="stylesheet" type="text/css" />
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	
+	<style type="text/css">
+
+.samlavailabletime {width: 30px}
+
+</style>
+
+
 </head>
 
 <body>
@@ -24,12 +30,19 @@
     <div>
         <table id="samlconfig">
         <tr>
-            <td>SAML NOT BEFORFE</td>
-            <td><input type="text" name="SAML_NOT_BEFORE" id="samlnotbefore"></td>
-        </tr>
-         <tr>
-            <td>SAML NOT AFTER</td>
-            <td><input type="text" name="SAML_NOT_AFTER" id="samlnotafter"></td>
+            <td>SAML有效时间</td>
+            <td><input type="text" id="SAML_YEAR" class="samlavailabletime"></td>
+            <td>年</td>
+            <td><input type="text" id="SAML_MONTH" class="samlavailabletime"></td>
+            <td>月</td>
+            <td><input type="text" id="SAML_DAY" class="samlavailabletime"></td>
+            <td>日</td>
+            <td><input type="text" id="SAML_HOUR" class="samlavailabletime"></td>
+            <td>时</td>
+            <td><input type="text" id="SAML_MINUTE" class="samlavailabletime"></td>
+            <td>分</td>
+            <td><input type="text" id="SAML_SECOND" class="samlavailabletime"></td>
+            <td>秒</td>
         </tr>
         <tr>
             <td>
@@ -85,7 +98,6 @@
                     }else{
                         alert("添加失败");
                     }
-
             });
         }
         function displayattradd () {
@@ -97,8 +109,23 @@
 
             $.getJSON(url,function(data){
                 if(data != null){
-                    $("#samlnotbefore").val(data.SAML_NOT_BEFORE);
-                    $("#samlnotafter").val(data.SAML_NOT_AFTER);
+                    time = parseInt(data.SAML_NOT_AFTER);
+                    var year = Math.floor(time/31536000);
+                    time = time%31536000;
+                    var month = Math.floor(time/2592000);
+                    time = time%2592000;
+                    var day = Math.floor(time/86400);
+                    time = time%86400;
+                    var hour = Math.floor(time/3600);
+                    time = time%3600;
+                    var minute = Math.floor(time/60);
+                    var secend = time%60;
+                    $("#SAML_YEAR").val(year);
+                    $("#SAML_MONTH").val(month);
+                    $("#SAML_DAY").val(day);
+                    $("#SAML_HOUR").val(hour);
+                    $("#SAML_MINUTE").val(minute);
+                    $("#SAML_SECOND").val(secend);
                 }
             });
 
@@ -153,12 +180,17 @@
             );
         }
         function modifyconfig () {
-            var form = $("<form action=\"#\"></form>");
-            form.append($("#samlconfig"));
-            var url = "/admin/samlconfig";
-            var data=form.serialize();
+            var url = "/admin/samlconfig?action=modifyconfig";
+            var year = parseInt($("#SAML_YEAR").val());
+            var month = parseInt($("#SAML_MONTH").val());
+            var day = parseInt($("#SAML_DAY").val());
+            var hour = parseInt($("#SAML_HOUR").val());
+            var minute = parseInt($("#SAML_MINUTE").val());
+            var secend = parseInt($("#SAML_SECOND").val());
+            var data = ((((year*365+month*30+day)*24)+hour)*60+minute)*60+secend;
 
-            $.post(url,data,function(data){
+
+            $.post(url,"samlavailabletime="+data,function(data){
                 if(data == "true"){
                     alert("修改成功");
                 }else{

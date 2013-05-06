@@ -27,11 +27,10 @@ public class samlconfigServlet extends HttpServlet {
 				SamlConfigRole config = Configs.getthissamlconfig();
 				String SAML_NOT_BEFORE = request.getParameter("SAML_NOT_BEFORE");
 				String SAML_NOT_AFTER = request.getParameter("SAML_NOT_AFTER");
-				if(SAML_NOT_BEFORE != null){
-					config.setSAML_NOT_BEFORE(Integer.parseInt(SAML_NOT_BEFORE));
-				}
-				if(SAML_NOT_AFTER != null){
-					config.setSAML_NOT_AFTER(Integer.parseInt(SAML_NOT_AFTER));
+				String samlavailabletime = request.getParameter("samlavailabletime");
+				if(samlavailabletime != null){
+					config.setSAML_NOT_BEFORE(Integer.parseInt(samlavailabletime));
+					config.setSAML_NOT_AFTER(Integer.parseInt(samlavailabletime));
 				}
 				boolean result = Configs.saveconfig(config);
 				response.getWriter().print(result);
