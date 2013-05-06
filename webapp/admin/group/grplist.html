@@ -17,7 +17,7 @@
         	<li><strong>Location:</strong></li>
             <li><a href="../right_list.php" title="返回首页">欢迎</a></li>
             <li>/</li>
-	        <li class="current" id="list">列表</li>
+	        <li class="current" id="list">管理</li>
             <li class="current"><font color="red">***删除属性请慎重***</font></li>
         </ul>
     </div>
@@ -26,12 +26,30 @@
     	<table id="grouplist" border='0'>
     	<thead>
 		<tr>
-			<th>名称</th><th>用户数</th><th>分配用户</th><th>删除</th>
+			<th>名称</th><th>用户数</th><th>删除</th>
 		</tr>
 		</thead>
 		<tbody>
 		</tbody>
 	</table>
+	<button value="添加属性" name="button" id="addgroupbutton" onclick="$(this).hide();displaygroupadd();">添加属性</button>
+    <form name="groupadd" id="groupadd" method="post" action="" style="display:none">
+	<table>
+		<tr>
+			<td>名</td>
+			<td><input type="text" name="groupname"></td>
+			<td><input type="hidden" name="action" value="addgroup"></td>
+			<td><input type="hidden" name="attrtype" value=""></td>
+
+		</tr>
+		<tr>
+			<td>
+		<input type="button" value="添加" name="button" onclick="addgroup();">
+</td>
+</tr>
+	</table>
+</form>
+
     </div>
 	    
 
@@ -44,6 +62,10 @@ function getCookie(c_name){
         return null;     
     }
 }
+function displaygroupadd () {
+	$("#grouplist").hide();
+	$("#groupadd").show();
+}
 function getthisattrtype () {
 	var attrname = getCookie("attrtype");
 	getattrtypedetails(attrname);
@@ -54,11 +76,33 @@ function getattrtypedetails (attrtype) {
 		if(data != null){
 			$("#grouplist th:first").prepend(data);
 			$("#list").prepend(data);
+			$("#groupadd").find("td:first").prepend(data);
 			groupadd.attrtype.value = attrname;
 		}
 	});
-
 }
+		function checkadd(){
+			if(groupadd.groupname.value==""){
+                alert("属性名不能为空！");
+				return false;
+			}
+			return true;
+		}
+		function addgroup(){
+			if(checkadd() == true){
+				var data;
+        		data = $('#groupadd').serialize();
+        		$.post("/admin/group",data,function(data){
+        			if(data == "true"){
+        				alert("添加成功");
+        				document.location.reload();
+        			}else{
+        				alert("添加失败");
+        			}
+        		}
+        		);
+			}
+		}
 
 		function firm(){
 			if(confirm("是否删除此属性？")){

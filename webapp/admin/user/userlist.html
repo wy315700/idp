@@ -35,7 +35,7 @@
     </div>
     <!-- 右侧主页面上部导航条结束 -->
     
-	<div>
+	<div id="userlistdiv">
     	<table id="userlist" border='0'>
     	<thead>
 		<tr>
@@ -54,7 +54,9 @@
 
 		</tbody>
 		</table>
-
+	</div>
+	<div>
+<button value="搜索用户" name="button" id="searchuserbutton" onclick="$(this).hide();displayusersearch();">搜索用户</button>
     	<table id="usergrp" border='0' style='display:none'>
 		<tr>
 			<td>用户名</td>
@@ -68,7 +70,22 @@
         	</td>
         </tr>
 		</table>
-
+</div>
+<div>
+<table id="searchusertb" style='display:none'>
+		<tr>
+			<td>用户名</td>
+			<td><input type="text" id="searchusername" name="username"></td>
+		</tr>
+        <tr>
+        <td>
+		<input type="button" value="搜索" name="button" onclick="searchuserbyname();">
+	   </td>
+		<td><input type="hidden" name="action" value="searchuser"></td>
+        </tr>
+</table>
+</div>
+<div>
     <table style='display:none'>
         <tr>
             <td>用户名</td>
@@ -91,10 +108,18 @@
             </td>
         </tr>
     </table>
-
+</div>
 		<p id="modifyalert" style='display:none'>正在修改，请稍后</p>
-    </div>
+    
 <script language="javascript">
+function displayusersearch () {
+	$("#searchusertb").show();
+}
+function searchuserbyname () {
+	var username = $("#searchusertb input:first").val();
+	getuserbyname(username);
+	$("#searchusertb").hide();
+}
 		function firm(){
 			if(confirm("是否删除此用户？")){
 				
@@ -143,9 +168,8 @@
 			);
 		}
 		function getuserbyname (username) {
-
 			$(".username").val(username);
-
+			$("#searchuserbutton").hide();
 			var url = "/admin/group?action=getallattrs";
 			$.getJSON(url,function(data){
 				if(data != null){
@@ -157,6 +181,7 @@
 						var attrtypetd = $("<td></td>");
 						var attrcontenttd = $("<td></td>");
 						attrtypetd.append(index);
+						attrtypetd.attr("id",index+"td");
 						for (var i = 0; i < data[index].length; i++) {
 							var selectgroup = $("<input type=\"checkbox\" />");
 							var groupnamelabel = $("<label></label>");
@@ -173,30 +198,46 @@
 						attrtr.append(attrcontenttd);	
 						tr.after(attrtr);
 					};
+					getattrtypedetails();
 					getusergroups(username);
 				}
 			});
 		}
+function getattrtypedetails () {
+        var url2 = "/admin/tenantconfig?action=getallattrs";
+        $.getJSON(url2,function(data){
+            if(data != null){
+                for (var index in data.attributeset) {
+                	$("#"+index+"td").text(data.attributeset[index]);
+                };
+            }
+        });
+}
+
 		function getusergroups (username) {
 			var url = "/admin/user?action=getuser&username="+encodeURI(username);
 			$.getJSON(url,function(data){
-				$("#userlist").hide();
-				var usernametd = $("<td algin='center'></td>");
-				var usergrptd  = $("<td algin='center'></td>");
+				if(data == null){
+					alert("用户不存在!");
+        			document.location.reload();
+				}else{
+					$("#userlistdiv").hide();
+					var usernametd = $("<td algin='center'></td>");
+					var usergrptd  = $("<td algin='center'></td>");
 
-				usernametd.append(data.username);
-				for(var index in data.usergroup){
-					for (var i = 0; i < data.usergroup[index].length; i++) {
-						//alert("#"+data.usergroup[index][i]);
-						$("input").filter("#"+data.usergroup[index][i]).attr("checked","checked");		
-					};
+					usernametd.append(data.username);
+					for(var index in data.usergroup){
+						for (var i = 0; i < data.usergroup[index].length; i++) {
+							//alert("#"+data.usergroup[index][i]);
+							$("input").filter("#"+data.usergroup[index][i]).attr("checked","checked");		
+						}
+					}
+					$("#usergrp tr:first").append(usernametd);
+					$("#usergrp").show();
+					//$("#usergrp  tr:eq(1)")(1).append(usergrptd);
+					
 				}
-				$("#usergrp tr:first").append(usernametd);
-				$("#usergrp").show();
-				//$("#usergrp  tr:eq(1)")(1).append(usergrptd);
-				});
-
-
+			});
 		}
 		function getallusers(){
 			var url = "/admin/user?action=getallusers";

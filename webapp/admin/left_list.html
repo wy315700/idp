@@ -102,6 +102,7 @@ function delCookie (c_name) {
             if(data != null){
                 var attrbutionul = $("#attrbution");
                 for(var index in data.attributeset ){
+                    /*
                     var li_add = $("<li></li>");
                     var a_add  = $("<a>添加</a>");
                     a_add.append(data.attributeset[index]);
@@ -111,11 +112,11 @@ function delCookie (c_name) {
 
                     li_add.append(a_add);
                     attrbutionul.append(li_add);
-
+                    */
                     var li_list = $("<li></li>");
-                    var a_list  = $("<a>查看</a>");
+                    var a_list  = $("<a>管理</a>");
 
-                    a_list.append(data.attributeset[index]);
+                    a_list.prepend(data.attributeset[index]);
                     a_list.attr("href","group/grplist.html");
                     a_list.attr("target","right");
                     a_list.attr("class",index);

@@ -61,10 +61,14 @@ public class userServlet extends HttpServlet{
 				if(username != null){
 					userAdmin useradmin = new userAdmin();
 					UserRole user = useradmin.getUserByName(username);
-					Gson json = new Gson();
-					String returnuser = json.toJson(user);
-					response.setCharacterEncoding("utf-8");
-					response.getWriter().println(returnuser);
+					//if(user != null){
+						Gson json = new Gson();
+						String returnuser = json.toJson(user);
+						response.setCharacterEncoding("utf-8");
+						response.getWriter().print(returnuser);
+					//}else{
+					//	response.getWriter().print("false");
+					//}
 				}
 			}else if(action.equals("modifyusergroup")){
 				String username = request.getParameter("username");
