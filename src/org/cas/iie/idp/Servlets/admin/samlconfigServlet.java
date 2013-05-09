@@ -34,6 +34,16 @@ public class samlconfigServlet extends HttpServlet {
 				}
 				boolean result = Configs.saveconfig(config);
 				response.getWriter().print(result);
+			}else if(action.equals("getpubkey")){
+				SamlConfigRole config = Configs.getthissamlconfig();
+				String key = config.getPublickeystr();
+				response.getWriter().print(key);
+			}else if(action.equals("newpubkey")){
+				SamlConfigRole config = Configs.getthissamlconfig();
+				config.generateNewKey();
+				Configs.saveconfig(config);
+				String key = config.getPublickeystr();
+				response.getWriter().print(key);
 			}
 		}
 	}

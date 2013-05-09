@@ -1,6 +1,12 @@
 package cc.saml;
 
 import java.io.IOException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,7 +40,22 @@ import org.opensaml.xml.XMLObjectBuilder;
 import org.opensaml.xml.io.MarshallingException;
 import org.opensaml.xml.io.UnmarshallingException;
 import org.opensaml.xml.schema.XSAny;
+import org.opensaml.xml.security.SecurityConfiguration;
+import org.opensaml.xml.security.SecurityException;
+import org.opensaml.xml.security.SecurityHelper;
+import org.opensaml.xml.security.credential.BasicCredential;
+import org.opensaml.xml.security.credential.Credential;
+import org.opensaml.xml.security.keyinfo.KeyInfoGenerator;
+import org.opensaml.xml.security.keyinfo.KeyInfoGeneratorFactory;
+import org.opensaml.xml.security.keyinfo.KeyInfoGeneratorManager;
+import org.opensaml.xml.security.keyinfo.NamedKeyInfoGeneratorManager;
+import org.opensaml.xml.signature.KeyInfo;
+import org.opensaml.xml.signature.Signature;
+import org.opensaml.xml.signature.SignatureConstants;
+import org.opensaml.xml.signature.SignatureException;
+import org.opensaml.xml.signature.Signer;
 import org.xml.sax.SAXException;
+
 
 
 import LOG.Logger;
@@ -119,7 +140,7 @@ public class SAMLresponse extends SAML {
 			for(Map.Entry<String, Set<String>> entry : user.getUsergroup().entrySet()){
 				addAttribution(assertion,entry.getKey(),new ArrayList(entry.getValue()));
 			}
-			
+			assertion = createAssertionSignatrue(assertion);
 			samlResponse = showResponse(assertion);
 			if(samlResponse != null){
 				return true;
@@ -188,8 +209,45 @@ public class SAMLresponse extends SAML {
 	    
 		return assertion;
 	}
+	public Assertion createAssertionSignatrue(Assertion assertion) throws NoSuchAlgorithmException, NoSuchProviderException, SecurityException, SignatureException, UnmarshallingException{
+        //signed
+		SamlConfigRole samlconfig = Configs.getthissamlconfig();
+		PrivateKey priKey = samlconfig.getPrivatekey();
+		PublicKey pubKey = samlconfig.getPublickey();
+		BasicCredential goodCredential = SecurityHelper.getSimpleCredential(pubKey, priKey);
+        //Credential signingCredential = getSigningCredential();
+
+        Signature signature = create(Signature.class, Signature.DEFAULT_ELEMENT_NAME);
+        signature.setSigningCredential(goodCredential);
+        signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
+        signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA_SHA1);
+        
+        
+        SecurityConfiguration secConfiguration = Configuration.getGlobalSecurityConfiguration(); 
+        NamedKeyInfoGeneratorManager namedKeyInfoGeneratorManager = secConfiguration.getKeyInfoGeneratorManager(); 
+        KeyInfoGeneratorManager keyInfoGeneratorManager = namedKeyInfoGeneratorManager.getDefaultManager();
+        KeyInfoGeneratorFactory keyInfoGeneratorFactory = keyInfoGeneratorManager.getFactory(goodCredential);
+        KeyInfoGenerator keyInfoGenerator = keyInfoGeneratorFactory.newInstance();
+        KeyInfo keyInfo = null;
+
+        keyInfo = keyInfoGenerator.generate(goodCredential);
+        signature.setKeyInfo(keyInfo);
+        assertion.setSignature(signature);
+        Assertion signedAssertion = null;
+        try {
+        	Configuration.getMarshallerFactory().getMarshaller(assertion).marshall(assertion);
+        	Signer.signObject(signature);
+        	signedAssertion = 
+                    (Assertion) Configuration.getUnmarshallerFactory().getUnmarshaller(assertion.getDOM()).unmarshall(assertion.getDOM());
+        } catch (MarshallingException e) {
+        	e.printStackTrace();
+        }
+        
+        return signedAssertion;
+
+	}
 	/**
-    Creates a file whose contents are a SAML authentication assertion.
+    Creates a assertion whose contents are a SAML authentication assertion.
     */
     public Assertion createStockAuthnAssertion ()
         throws Exception

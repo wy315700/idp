@@ -81,9 +81,26 @@
 
         </tr>
 </table>
-
+<div>
+    <h2>公钥</h2>
+    <h4><a href="javascript:void(0)" onclick="getnewkey();">更新密钥</a></h4>
+    <div id="publickey">a</div>
+</div>
     </div>
 	    <script type="text/javascript">
+        function getnewkey () {
+            url = "/admin/samlconfig?action=newpubkey";
+            $.get(url,function(data){
+                $("#publickey").text(data);
+            });
+
+        }
+        function getpubkey(){
+            url = "/admin/samlconfig?action=getpubkey";
+            $.get(url,function(data){
+                $("#publickey").text(data);
+            });
+        }
         function addattr () {
             var url = "/admin/tenantconfig?action=addattr";
             var form = $("<form></form>");
@@ -127,6 +144,7 @@
                     $("#SAML_MINUTE").val(minute);
                     $("#SAML_SECOND").val(secend);
                 }
+                getpubkey();
             });
 
             var url2 = "/admin/tenantconfig?action=getallattrs";

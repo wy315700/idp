@@ -1,5 +1,12 @@
 package org.cas.iie.idp.user;
 
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.cas.iie.idp.admin.tenantAdmin;
 
 import com.mysql.jdbc.Connection;
@@ -53,6 +61,9 @@ public class Configs {
 		boolean result = true;
 		result = savesamlconfigs(config.getTenantname(),"SAML_NOT_AFTER",String.valueOf(config.getSAML_NOT_AFTER()));
 		result = savesamlconfigs(config.getTenantname(),"SAML_NOT_BEFORE",String.valueOf(config.getSAML_NOT_BEFORE()));
+		result = savesamlconfigs(config.getTenantname(),"SAML_PUBLIC_KEY",String.valueOf(config.getPublickeystr()));
+		result = savesamlconfigs(config.getTenantname(),"SAML_PRIVATE_KEY",String.valueOf(config.getPrivatekeystr()));
+		
 		return result;
 	}
 	public static boolean saveconfig(TenantConfigRole config){
@@ -105,8 +116,8 @@ public class Configs {
 				e.printStackTrace();
 			}
 		return result;
-
 	}
+	
 	private static boolean addattrconfig(String tenantname,String attr,String attrdispname){
 		PreparedStatement sta = null;
 		boolean result = true;
@@ -149,6 +160,7 @@ public class Configs {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			config.readKeyFromStr();
 			samlconfigs.put(tenant.getTenantname(), config);
 		}
 	}

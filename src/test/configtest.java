@@ -15,14 +15,15 @@ public class configtest {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		//SamlConfigRole config = Configs.getSamlConfig("iie");
+		LDAPhelper.domain = "o=iie";
+		Configs.setthisconfig("iie");
+		SamlConfigRole config = Configs.getSamlConfig("iie");
 		//config.setSAML_NOT_AFTER(20);
 		//config.setSAML_NOT_BEFORE(25);
 		//TenantConfigRole config = Configs.getTenantConfig("iie");
 		//config.addAttribute("group","群组");
-		//Configs.saveconfig(config);
-		LDAPhelper.domain = "o=iie";
-		Configs.setthisconfig("iie");
+		Configs.saveconfig(config);
+		/*
 		configAdmin configadmin = new configAdmin();
 		
 		configadmin.deleteAttribution("aa");
@@ -32,6 +33,7 @@ public class configtest {
 		configadmin.addAttribute("aa");
 		attrs = configadmin.getAllAttibutions();
 		System.out.println(attrs.toString());
+		*/
 	}
 
 }
