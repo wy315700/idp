@@ -243,4 +243,15 @@ body {height: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 13px; 
 	
 	#footer {font-size: 11px; padding: 15px 10px; clear: both; background: url(../img/bg_footer.png) repeat-x bottom; margin-bottom: 20px; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; -moz-border-radius-bottomright: 10px; -moz-border-radius-bottomleft: 10px; text-shadow: 1px 1px 1px #fff;}
 
-#publickey {word-break: break-all;padding: 10px;border: 1px solid;margin: 10px;background: #D0D0D0;}
+.certificationdiv {word-break: break-all;border: 1px solid;margin: 10px;background: #D0D0D0;}
+pre{
+    white-space: pre;           /* CSS 2.0 */
+    white-space: pre-wrap;      /* CSS 2.1 */
+    white-space: pre-line;      /* CSS 3.0 */
+    white-space: -pre-wrap;     /* Opera 4-6 */
+    white-space: -o-pre-wrap;   /* Opera 7 */
+    white-space: -moz-pre-wrap !important; /* Mozilla */
+    white-space: -hp-pre-wrap;  /* HP Printers */
+    word-wrap: break-word;      /* IE 5+ */
+    margin: 10px
+ }  

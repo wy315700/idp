@@ -84,21 +84,35 @@
 <div>
     <h2>公钥</h2>
     <h4><a href="javascript:void(0)" onclick="getnewkey();">更新密钥</a></h4>
-    <div id="publickey">a</div>
+    <div class="certificationdiv" id="thiscertification"><pre></pre></div>
+    <h2>根证书</h2>
+    <div class="certificationdiv" id="rootcertification"><pre></pre></div>
 </div>
     </div>
 	    <script type="text/javascript">
         function getnewkey () {
+            if(confirm("真的要更新证书吗？")){
+            }else{
+                return;
+            }
             url = "/admin/samlconfig?action=newpubkey";
+            $("#thiscertification pre").text("正在更新，请不要刷新页面");
             $.get(url,function(data){
-                $("#publickey").text(data);
+                $("#thiscertification pre").text(data);
+            });
+
+        }
+        function getrootcert(){
+            url = "/admin/samlconfig?action=getrootcert";
+            $.get(url,function(data){
+                $("#rootcertification pre").text(data);
             });
 
         }
         function getpubkey(){
             url = "/admin/samlconfig?action=getpubkey";
             $.get(url,function(data){
-                $("#publickey").text(data);
+                $("#thiscertification pre").text(data);
             });
         }
         function addattr () {
@@ -145,6 +159,7 @@
                     $("#SAML_SECOND").val(secend);
                 }
                 getpubkey();
+                getrootcert();
             });
 
             var url2 = "/admin/tenantconfig?action=getallattrs";

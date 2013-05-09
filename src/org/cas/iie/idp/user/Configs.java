@@ -1,10 +1,22 @@
 package org.cas.iie.idp.user;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
+import java.security.Provider;
 import java.security.PublicKey;
+import java.security.Security;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.sql.DriverManager;
@@ -16,7 +28,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.log4j.spi.RootCategory;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.cas.iie.idp.admin.tenantAdmin;
+
+import sun.security.provider.X509Factory;
 
 import com.mysql.jdbc.Connection;
 
@@ -26,8 +42,11 @@ public class Configs {
 	private static TenantConfigRole thistenantconfig;
 	private static SamlConfigRole thissamlconfig;
 	public static  Connection con;
-
 	
+	private static PublicKey rootpubkey;
+	private static PrivateKey rootprikey;
+	private static Certificate cert;
+	private static String certstr;
 	private static String MYSQL_URL = "jdbc:mysql://127.0.0.1:3306/configs";
 	private static String MYSQL_USER = "root";
 	private static String MYSQL_PASS = "root";
@@ -47,6 +66,8 @@ public class Configs {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			con = (Connection) DriverManager.getConnection(MYSQL_URL,MYSQL_USER,MYSQL_PASS);
+			Security.addProvider(new BouncyCastleProvider());
+			getrootkeys();
 			getallsamlconfigs();
 			getallattrconfigs();
 		} catch (ClassNotFoundException e) {
@@ -161,6 +182,7 @@ public class Configs {
 				e.printStackTrace();
 			}
 			config.readKeyFromStr();
+			generateCert(config);
 			samlconfigs.put(tenant.getTenantname(), config);
 		}
 	}
@@ -193,6 +215,44 @@ public class Configs {
 			}
 		return result;
 	}
+	public static void generateCert(SamlConfigRole config){
+		config.generatecertificate((X509Certificate) cert, rootprikey);		
+	}
+	public static void generateNewCert(SamlConfigRole config){
+		config.generateNewKey();
+		generateCert(config);
+	}
+	private static void getrootkeys(){
+	     KeyPairGenerator kpg;
+		try {
+			kpg = KeyPairGenerator.getInstance("RSA","BC");
+		    kpg.initialize(1024);  
+		    KeyPair keyPair = kpg.generateKeyPair();  
+		    KeyStore store = KeyStore.getInstance("JKS");  
+			InputStream in = Configs.class.getResourceAsStream("/iie-ca.jks");
+
+		    store.load(in, "iie".toCharArray());  
+		    
+		    rootprikey = (PrivateKey)store.getKey("iie", "iie".toCharArray());
+		    
+		    cert = store.getCertificate("iie");
+		    rootpubkey=cert.getPublicKey();
+		    
+		    StringBuffer cstr = new StringBuffer();
+		    
+		    cstr.append(X509Factory.BEGIN_CERT+"\n");
+		    Base64 base64hendle = new Base64();
+		    cstr.append(new String(base64hendle.encode(cert.getEncoded())));
+		    cstr.append("\n");
+		    cstr.append(X509Factory.END_CERT);
+		    certstr = cstr.toString();
+		    System.out.println(certstr);
+		} catch (NoSuchAlgorithmException | NoSuchProviderException | KeyStoreException | CertificateException | IOException | UnrecoverableKeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+
+	}
 	public static SamlConfigRole getSamlConfig(String tenantname){
 		SamlConfigRole config = samlconfigs.get(tenantname);
 		return config;
@@ -211,4 +271,8 @@ public class Configs {
 	public static SamlConfigRole getthissamlconfig(){
 		return thissamlconfig;
 	}
+	public static String getCertstr() {
+		return certstr;
+	}
+	
 }

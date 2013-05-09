@@ -36,14 +36,17 @@ public class samlconfigServlet extends HttpServlet {
 				response.getWriter().print(result);
 			}else if(action.equals("getpubkey")){
 				SamlConfigRole config = Configs.getthissamlconfig();
-				String key = config.getPublickeystr();
+				String key = config.getCertificatestr();
 				response.getWriter().print(key);
 			}else if(action.equals("newpubkey")){
 				SamlConfigRole config = Configs.getthissamlconfig();
-				config.generateNewKey();
+				Configs.generateNewCert(config);
 				Configs.saveconfig(config);
-				String key = config.getPublickeystr();
+				String key = config.getCertificatestr();
 				response.getWriter().print(key);
+			}else if(action.equals("getrootcert")){
+				String rootcert = Configs.getCertstr();
+				response.getWriter().print(rootcert);
 			}
 		}
 	}
