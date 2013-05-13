@@ -25,8 +25,8 @@ public class LDAPhelper implements ILDAPDriver{
 	public static String domain = null;
 	private String suffix = null;
 	public static String SECURITY_AUTHENTICATION =  "simple";
-	private static String username = "uid=admin,dc=iie,dc=cas,dc=org";
-	private static String password = "123456";
+	private static String username = "uid=admin,ou=system";
+	private static String password = "secret";
 	private static String configfile = "apacheds.properties";
 	
 	public LDAPhelper(){

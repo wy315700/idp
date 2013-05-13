@@ -12,7 +12,15 @@
 		<filter-name>defaultFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-	
+	<filter>
+        <filter-name>adminFilter</filter-name>
+        <filter-class>org.cas.iie.idp.Filter.AdminFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>adminFilter</filter-name>
+        <url-pattern>/admin/*</url-pattern>
+    </filter-mapping>
 
 	<servlet>
 	<servlet-name>LoginServlet</servlet-name>

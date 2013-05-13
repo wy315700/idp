@@ -19,7 +19,7 @@
             <img src="/themes/blue/img/cp_logo_login.png" alt="Control Panel Login" />
         </div>
         <div id="innerlogin">
-           	<form method = "post" action = "login" id = "loginform" name="login">
+           	<form method = "post" action = "/admin/login" onsubmite="return checkform();" id = "loginform" name="login">
            		<!-- 表单提交给logincheck.php -->
                 <p>请输入账号:</p>
                 <input type="text" class="logininput" name="username" >
@@ -31,5 +31,29 @@
     </div>
         <img src="/img/login_fade.png" alt="Fade" >
 </div>
+<script type="text/javascript">
+
+function checkform(){
+            if((login.username.value!="")&&(login.password.value!="")){
+                //用户名密码不为空 则正确
+                return true;
+            }
+            else {
+                //用户名密码任意一个为空时 提示错误
+                alert("用户名密码不能为空！");
+                return false;
+            }
+        }
+function checklogin() {
+    if(checkform() == false){
+        return;
+    }
+    else{
+        var data;
+        data = $('#loginform').serialize();
+        $.post("/admin/login",data,display_welcom,'json');
+    }
+};
+    </script>
 </body>
 </html>

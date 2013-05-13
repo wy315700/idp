@@ -105,7 +105,7 @@ public class Configs {
 			PreparedStatement sta = null;
 			try {
 				sta = con.prepareStatement(MYSQL_GETATTRCONFIG_QUERY);
-				sta.setString(1,tenant.getTenantadminname());
+				sta.setString(1,tenant.getTenantname());
 				ResultSet rs = sta.executeQuery();
 				while(rs.next()){
 					String attr = rs.getString("attrname");
