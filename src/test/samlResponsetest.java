@@ -38,6 +38,7 @@ import org.opensaml.xml.signature.impl.SignatureBuilder;
 import org.opensaml.xml.validation.ValidationException;
 
 import cc.saml.SAML;
+import cc.saml.SAMLrequest;
 import cc.saml.SAMLresponse;
 import cc.xml.PrettyPrinter;
 
@@ -51,15 +52,17 @@ public class samlResponsetest extends SAML{
 		LDAPhelper.domain="o=iie";
 		Configs.setthisconfig("iie");
 		UserRole user = new UserRole();
-		user.setUsername("aaaa");
-		user.addUsergroup("aa","grp1");
-		user.addUsergroup("aa","grp4");
-		user.addUsergroup("role","grp2");
-		
+		user.setUsername("admin");
+		user.addUsergroup("group","grp1");
+		user.addUsergroup("group","grp2");
+		user.addUsergroup("role","role");
+		SAMLrequest requesthandle = new SAMLrequest("sp.example.org", "iie", "http://sp.example.org/");
+		requesthandle.generateAuthnRequest();
+		System.out.println(requesthandle.getSamlRequest());
 		SAMLresponse responsehandle = new SAMLresponse(user, 
-				"aaaaa", 
-				"aaaa", 
-				"bbbb");
+				"sp.example.org", 
+				"123456789", 
+				"http://sp.example.org/");
 		responsehandle.generateAuthnResponse();
 		
 		String result = responsehandle.getSamlResponse();

@@ -113,6 +113,9 @@
 						var nametd = $("<td algin='center'></td>");
 						var urltd  = $("<td algin='center'></td>");
 						var adminnametd = $("<td algin='center'></td>");
+						var modifytd  = $("<td class='modify'algin='center'></td>")
+						var modify    = $("<a href=\"javascript:void(0);\">修改</a>");
+
 						var deltd  = $("<td class='del'algin='center'></td>")
 						var del    = $("<a>删除</a>");
 
@@ -121,9 +124,11 @@
 						urltd.append(data[i].tenanturl);
 						adminnametd.append(data[i].tenantadminname);
 						deltd.append(del);
+						modifytd.append(modify);
 						tr.append(nametd);
 						tr.append(urltd);
 						tr.append(adminnametd);
+						tr.append(modifytd);
 						tr.append(deltd);
 
 						tbody.append(tr);

@@ -39,7 +39,7 @@
     	<table id="userlist" border='0'>
     	<thead>
 		<tr>
-			<th>用户名</th><th>真实名称</th><th>修改</th><th>分配群组</th><th>删除</th>
+			<th>用户名</th><th>真实名称</th><th>分配属性</th><th>删除</th>
 		</tr>
 		<!--
         <tr>
@@ -265,8 +265,8 @@ function getattrtypedetails () {
 						modifytd.append(modify);
 						tr.append(usernametd);
 						tr.append(realnametd);
-						tr.append(deltd);
     					tr.append(modifytd);
+    					tr.append(deltd);
 						tbody.append(tr);
 					}
 					var del = tbody.find(".del").find("a");
