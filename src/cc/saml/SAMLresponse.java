@@ -34,6 +34,7 @@ import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.Response;
 import org.opensaml.saml2.core.Statement;
 import org.opensaml.saml2.core.Subject;
+import org.opensaml.security.SAMLSignatureProfileValidator;
 import org.opensaml.xml.Configuration;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.XMLObjectBuilder;
@@ -53,7 +54,9 @@ import org.opensaml.xml.signature.KeyInfo;
 import org.opensaml.xml.signature.Signature;
 import org.opensaml.xml.signature.SignatureConstants;
 import org.opensaml.xml.signature.SignatureException;
+import org.opensaml.xml.signature.SignatureValidator;
 import org.opensaml.xml.signature.Signer;
+import org.opensaml.xml.validation.ValidationException;
 import org.xml.sax.SAXException;
 
 
@@ -98,7 +101,9 @@ public class SAMLresponse extends SAML {
 				throw new SAMLException("multiple assertions found!");
 			}
 			Assertion assertion = assertions.get(0);
-			
+			if(validateassertionsignature(assertion) == false){
+				return null;
+			}
 	        NameID nameID = assertion.getSubject ().getNameID ();
 	        
 	        UserRole returnuser = new UserRole();
@@ -131,7 +136,32 @@ public class SAMLresponse extends SAML {
 			return null;
 		}
 	}
-	
+	private boolean validateassertionsignature(Assertion assertion){
+		boolean result = false;
+		SAMLSignatureProfileValidator samlvalidator = new SAMLSignatureProfileValidator();
+		try {
+			samlvalidator.validate(assertion.getSignature());
+			result = true;
+		} catch (ValidationException e) {
+			// TODO Auto-generated catch block
+			result = false;
+			e.printStackTrace();
+		}
+		BasicCredential credential = new BasicCredential();
+		credential.setPublicKey(Configs.getthissamlconfig().getPublickey());
+		SignatureValidator validator = new SignatureValidator(credential);
+		try {
+			validator.validate(assertion.getSignature());
+			result = true;
+			System.out.println("signature is valid!");
+		} catch (ValidationException e) {
+			// TODO Auto-generated catch block
+			result = false;
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 	
 	
 	public boolean generateAuthnResponse(){
@@ -157,7 +187,6 @@ public class SAMLresponse extends SAML {
     public String showResponse(Assertion assertion) 
     		throws IOException, MarshallingException, TransformerException{
     	Response response = createResponse (assertion);
-
         Issuer issuer = create (Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
         issuer.setValue (IDP_URL);
         response.setIssuer (issuer);

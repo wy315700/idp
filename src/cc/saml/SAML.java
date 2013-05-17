@@ -3,10 +3,12 @@ package cc.saml;
 import LOG.Logger;
 import cc.xml.PrettyPrinter;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +16,11 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.joda.time.DateTime;
 
@@ -249,9 +255,15 @@ public class SAML
     public String printToString(XMLObject object) 
     		throws IOException, MarshallingException, TransformerException{
     	Document document = asDOMDocument (object);
-        String result = PrettyPrinter.prettyPrint (document);
-    	
-		return result;
+        //String result = PrettyPrinter.prettyPrint (document);
+    	DOMSource domsource  = new DOMSource(document);
+    	StringWriter writer = new StringWriter();
+    	StreamResult streamresult = new StreamResult(writer);
+    	TransformerFactory tf = TransformerFactory.newInstance();
+    	Transformer transformer = tf.newTransformer();
+    	transformer.setOutputProperty("encoding", "UTF-8");
+    	transformer.transform(domsource, streamresult);
+		return writer.toString();
     }
     /**
     Helper method to read an XML object from a String.
@@ -260,6 +272,7 @@ public class SAML
         throws IOException, UnmarshallingException, SAXException
     {
         return fromElement (builder.parse ( new InputSource( new StringReader( xmlString ) )).getDocumentElement ());    
+        //return fromElement (builder.parse ( new ByteArrayInputStream(xmlString.getBytes() )).getDocumentElement ());
     }
     /**
     Helper method to read an XML object from a file.

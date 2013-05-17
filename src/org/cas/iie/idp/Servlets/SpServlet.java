@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.cas.iie.idp.user.UserRole;
+import org.opensaml.saml2.core.Assertion;
+import org.opensaml.security.SAMLSignatureProfileValidator;
 
 import cc.saml.SAMLrequest;
 import cc.saml.SAMLresponse;
@@ -26,6 +28,8 @@ public class SpServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
+		response.setCharacterEncoding("utf-8");
+		request.setCharacterEncoding("utf-8");
 		if(session == null ||session.getAttribute("username") == null){
 			String samlresponse = request.getParameter("SAMLResponse");
 			if(samlresponse == null){
@@ -39,8 +43,10 @@ public class SpServlet extends HttpServlet {
 				UserRole user = responseHandle.readResponse();
 				if(user != null){
 					setSession(user.getUsername(),request);
+					response.getWriter().println(user.toString());
+				}else{
+					response.getWriter().println("samlresponse error!!");
 				}
-				response.getWriter().println(user.toString());
 			}
 		}
 		else{

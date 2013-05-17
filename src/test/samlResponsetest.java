@@ -2,6 +2,8 @@ package test;
 
 import java.io.IOException;
 import java.security.KeyPair;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
@@ -37,6 +39,8 @@ import org.opensaml.xml.signature.impl.ExplicitKeySignatureTrustEngine;
 import org.opensaml.xml.signature.impl.SignatureBuilder;
 import org.opensaml.xml.validation.ValidationException;
 
+import com.google.gson.Gson;
+
 import cc.saml.SAML;
 import cc.saml.SAMLrequest;
 import cc.saml.SAMLresponse;
@@ -53,7 +57,7 @@ public class samlResponsetest extends SAML{
 		Configs.setthisconfig("iie");
 		UserRole user = new UserRole();
 		user.setUsername("admin");
-		user.addUsergroup("group","grp1");
+		user.addUsergroup("group","群组");
 		user.addUsergroup("group","grp2");
 		user.addUsergroup("role","role");
 		SAMLrequest requesthandle = new SAMLrequest("sp.example.org", "iie", "http://sp.example.org/");
@@ -67,11 +71,31 @@ public class samlResponsetest extends SAML{
 		
 		String result = responsehandle.getSamlResponse();
 		
+		String[] keys   = {"islogin","action","samlResponse"};
+		String[] values = {"true","submitresponse",result};
+		String returnJsonMessage = generateJson(keys, values);
+
+		
+		
 		SAMLresponse responsehandle2 = new SAMLresponse(result);
 		
 		user = responsehandle2.readResponse();
-		System.out.println(result);
+		System.out.println(returnJsonMessage);
 		System.out.println(user.toString());
 		
 	}
+	private static String generateJson(String[] keys,String[] values){
+		Gson gson = new Gson();
+		Map<String,String> userObj = new HashMap<String, String>();
+		//userObj.put("username", username);
+		//userObj.put("islogin", "true");
+		if(keys.length != values.length){
+			return null;
+		}
+		for(int i = 0 ; i < keys.length ;i++ ){
+			userObj.put(keys[i],values[i]);
+		}
+		return gson.toJson(userObj);
+	}
+
 }

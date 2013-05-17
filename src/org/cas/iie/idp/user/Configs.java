@@ -182,6 +182,7 @@ public class Configs {
 				e.printStackTrace();
 			}
 			config.readKeyFromStr();
+			saveconfig(config);
 			generateCert(config);
 			samlconfigs.put(tenant.getTenantname(), config);
 		}

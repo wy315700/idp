@@ -36,6 +36,8 @@ public class LoginServlet extends HttpServlet{
 		HttpSession session = request.getSession(false);
 		boolean continueLogin = false;
 		boolean needToReturn = false;
+		response.setCharacterEncoding("utf-8");
+		request.setCharacterEncoding("utf-8");
 		String[] samlResponseAttributes = null;
 		String username     = request.getParameter("username");
 		String password     = request.getParameter("password");
@@ -85,6 +87,7 @@ public class LoginServlet extends HttpServlet{
 				String[] keys   = {"islogin","action","acsUrl","username","samlResponse"};
 				String[] values = {"true","submitresponse",acsUrl,username,samlresponse};
 				String returnJsonMessage = generateJson(keys, values);
+				System.out.println(returnJsonMessage);
 				response.getWriter().println(returnJsonMessage);
 			}else{
 				String[] keys   = {"islogin","action","username"};

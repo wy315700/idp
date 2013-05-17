@@ -119,7 +119,7 @@ public class PrettyPrinter
                 .transform (new DOMSource (doc), new StreamResult (buffer));
             byte[] rawResult = buffer.toByteArray ();
             buffer.close ();
-            
+            //return new String(rawResult);
             return prettyPrint (rawResult);
         }
         catch (Exception ex)
