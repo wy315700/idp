@@ -62,15 +62,15 @@ public class configAdmin {
 			if(enm == null){
 				throw new NamingException("search failed");
 			}
-			if(enm.hasMore()){
-				enm.next();
-				if(enm.hasMore()){
-					throw new NamingException("search failed");
+			while(enm.hasMore()){
+				SearchResult entry = (SearchResult)enm.next();
+				Attributes attrs = entry.getAttributes();
+				Attribute ouAttr = attrs.get("ou");
+				String ou = ouAttr.get().toString();
+				if(ou.equals(attrtype)){
+					result = true;
+					break;
 				}
-				result = true;
-			}
-			else{
-				result = false;
 			}
         } catch (NamingException e) {
 			// TODO Auto-generated catch block
